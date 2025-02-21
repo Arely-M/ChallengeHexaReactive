@@ -1,0 +1,425 @@
+openapi: 3.0.0
+info:
+  title: MSA Support - Customer
+  description: |
+    <sup>(ES)</sup> Microservicio de soporte está diseñado para administrar clientes, ofreciendo funcionalidades completas de gestión que incluyen la capacidad de realizar consultas para obtener información detallada de los clientes, añadir nuevos registros de clientes, actualizar datos existentes, editar detalles específicos cuando sea necesario, y eliminar clientes cuando ya no se requieran en el sistema<br><br>
+    <sup>(EN)</sup> Support Microservice is designed to manage customers, offering full management capabilities including the ability to query for detailed customer information, add new customer records, update existing data, edit specific details when necessary, and delete customers when they are no longer required in the system<br><br>
+  version: 1.0.0
+  contact:
+    name: Arely Martinez
+    email: ardmarti@pichincha.com
+servers:
+  - url: http://localhost:8080
+    description: Development
+
+tags:
+  - name: Customer
+    description: Customer Controller
+
+paths:
+  /support/v1/customers:
+    get:
+      tags:
+        - Customer
+      summary: "⁽ᴱˢ⁾ Devuelve una lista de clientes. \n⁽ᴱᴺ⁾ Retrieves a list of customers.\n"
+      operationId: GetCustomerByFilter
+      parameters:
+        - name: customerId
+          required: false
+          in: query
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 30
+            pattern: "^[0-9]+$"
+            example: "ertynu2mjqw"
+          description: customer identification
+      description: |
+        ### Details:
+        <sup>(ES)</sup> Permite realizar la consulta de clientes.⠀<br>
+        <sup>(EN)</sup> Allows consult customers. <br><br>
+        
+        | Expected Result  | Path Parameter | Query Parameter                 |
+        | ---------------- | ------------   | -----------------------------------|
+        | Retrieves a list of customers| - | -   |
+        | Recovery a customer| - | customerId  |
+      responses:
+        "200":
+          description: |
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Busqueda exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Successful search.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCustomerByFilterResponse'
+              examples:
+                GetCustomerByFilterResponseExample:
+                  $ref: '#/components/examples/GetCustomerByFilterResponseExample'
+    post:
+      tags:
+        -  Customer
+      summary: "⁽ᴱˢ⁾ Guarda un cliente. \n⁽ᴱᴺ⁾ Save a customer.\n"
+      operationId: PostCustomer
+      description: |-
+        <sup>(ES)</sup> Permite realizar el guardado de clientes.⠀<br>
+        <sup>(EN)</sup> Allows you to save customers. <br><br>
+      requestBody:
+        description: |-
+          <sup><i>(ES)</i></sup> Cliente a crear.
+          <br><br>
+          <sup><i>(EN)</i></sup> Customer to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCustomerRequest'
+            examples:
+              PostCustomerRequestExample:
+                $ref: '#/components/examples/PostCustomerRequestExample'
+      responses:
+        "201":
+          description: |-
+            <b>`Created`</b><br><br>
+            <sup><i>(ES)</i></sup> Inserción exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Insertion successful.
+
+  /support/v1/customers/{customerId}:
+    put:
+      tags:
+        - Customer
+      summary: "⁽ᴱˢ⁾ Actualizar el cliente. ⁽ᴱᴺ⁾ Update the customer."
+      description: |-
+        <sup>(ES)</sup> Permite realizar el actualizado de clientes.⠀<br>
+        <sup>(EN)</sup> Allows you to update customers. <br><br>
+      operationId: PutCustomer
+      parameters:
+        - name: customerId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 30
+            pattern: "^[0-9]+$"
+            example: "ertynu2mjqw"
+          description: customer identification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutCustomerRequest'
+            examples:
+              PutCustomerRequestExample:
+                $ref: '#/components/examples/PutCustomerRequestExample'
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Actualizacion exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Update successful.
+    delete:
+      tags:
+        - Customer
+      summary: "⁽ᴱˢ⁾ Elimina el cliente. ⁽ᴱᴺ⁾ Delete the customer."
+      description: |-
+        <sup>(ES)</sup> Permite realizar el eliminado de clientes.⠀<br>
+        <sup>(EN)</sup> Allows you to delete customers. <br><br>
+      operationId: DeleteCustomer
+      parameters:
+        - name: customerId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 30
+            pattern: "^[0-9]+$"
+            example: "ertynu2mjqw"
+          description: customer identification
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Eliminación exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Deletion successful.            
+
+components:
+  schemas:
+    GetCustomerByFilterResponse:
+      type: array
+      description: |
+        <sup><i>(ES)</i></sup>Respuesta con el listado de clientes.
+        <br><br>
+        <sup><i>(EN)</i></sup>Responce with the list of clients.
+      items:
+        $ref : "#/components/schemas/Customer"
+    PostCustomerRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del cliente a guardar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Customer information to be saved.
+      allOf:
+        - $ref:  "#/components/schemas/Customer"
+    PutCustomerRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del cliente a actualizar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Customer information to be update.
+      allOf:
+        - $ref:  "#/components/schemas/PutCustomer"
+
+    Address:
+      type: object
+      properties:
+        value:
+          type: string
+          minLength: 1
+          maxLength: 40
+          pattern: "^[a-zA-Z\\s]+$"
+    Customer:
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de un cliente.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about a customer.
+      allOf:
+        - $ref: '#/components/schemas/Person'
+        - type: object
+          required:
+            - customerId
+          properties:
+            customerId:
+              type: string
+              description: |
+                <sup><i>(ES)</i></sup>Identificación del cliente.
+                <br><br>
+                <sup><i>(EN)</i></sup>Customer identification.
+              minLength: 1
+              maxLength: 30
+              pattern: "^[0-9]+$"
+            password:
+              type: string
+              description: |
+                <sup><i>(ES)</i></sup>Contraseña del cliente.
+                <br><br>
+                <sup><i>(EN)</i></sup>Customer password.
+              minLength: 6
+            status:
+              $ref: '#/components/schemas/Status'
+    Gender:
+      type: object
+      description: |-
+        <sup><i>(ES)</i></sup> Especifica el género de la persona.
+        <br><br>
+        <sup><i>(EN)</i></sup> Specifies the gender of the person.
+      properties:
+        code:
+          type: string
+          description: |-
+            <sup><i>(ES)</i></sup> Código del género.
+            <br><br>
+            <sup><i>(EN)</i></sup> Gender code.
+          enum:
+            - M
+            - F
+    Identification:
+      type: object
+      description: |-
+        <sup><i>(ES)</i></sup> Manera única e inequívoca de identificar a una persona.
+        <br><br>
+        <sup><i>(EN)</i></sup> Unique and unambiguous way to identify a person.
+      properties:
+        type:
+          $ref: "#/components/schemas/TypeOfIdentification"
+        identifier:
+          $ref: "#/components/schemas/Identifier"
+    TypeOfIdentification:
+      type: object
+      description: |-
+        <sup><i>(ES)</i></sup> Información relacionada con el tipo de identificación de una persona.
+        <br><br>
+        <sup><i>(EN)</i></sup> Information related to a person's identification type.
+      properties:
+        code:
+          type: string
+          description: |-
+            <sup><i>(ES)</i></sup> Especifica el código de identificación que se puede utilizar para identificar a una parte.
+            <br><br>
+            <sup><i>(EN)</i></sup> Specifies the code of identification which can be used to identify a party.
+          enum:
+            - CCPT #0002 PASAPORTE
+            - TXID #0003 REGISTRO UNICO CONTRIBUYENTE
+            - IDCD #0001 CEDULA
+        name:
+          type: string
+          description: |-
+            <sup><i>(ES)</i></sup> Información en detalle con el tipo de identificación de una persona.
+            <br><br>
+            <sup><i>(EN)</i></sup> Detailed information on a person's identification type.
+          minLength: 1
+          maxLength: 40
+          pattern: "^[a-zA-Z\\s]+$"
+    Identifier:
+      type: object
+      description: |-
+        <sup><i>(ES)</i></sup> Información relacionada con la identificación de una persona.
+        <br><br>
+        <sup><i>(EN)</i></sup> Information related to the identification of a person.
+      properties:
+        value:
+          type: string
+          description: |-
+            <sup><i>(ES)</i></sup> Valor de la identificación de una persona.
+            <br><br>
+            <sup><i>(EN)</i></sup> Value of a person's identification..
+          minLength: 1
+          maxLength: 13
+          pattern: "^[0-9]+$"
+    Person:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de una persona.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about a person.
+      required:
+        - name
+        - gender
+        - age
+        - identification
+      properties:
+        name:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Nombre del cliente.
+            <br><br>
+            <sup><i>(EN)</i></sup>Client name.
+          minLength: 1
+          maxLength: 40
+          pattern: "^[a-zA-Z\\s]+$"
+        gender:
+          $ref: "#/components/schemas/Gender"
+        age:
+          type: number
+          description: |
+            <sup><i>(ES)</i></sup>Identificación del cliente.
+            <br><br>
+            <sup><i>(EN)</i></sup>Customer identification.
+        identification:
+          $ref: "#/components/schemas/Identification"
+        address:
+          $ref: '#/components/schemas/Address'
+        phoneAddress:
+          $ref: '#/components/schemas/PhoneAddress'
+    PhoneAddress:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Direccion telefonica de la persona.
+        <br><br>
+        <sup><i>(EN)</i></sup>Person's telephone address.
+      properties:
+        description:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Telephone address number.
+            <br><br>
+            <sup><i>(EN)</i></sup>Número de dirección telefónica.
+          minLength: 1
+          maxLength: 10
+          pattern: "^[0-9]+$"
+    PutCustomer:
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de un cliente.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about a customer.
+      allOf:
+        - $ref: '#/components/schemas/Person'
+        - type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/Status'
+    Status:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Estado del cliente.
+        <br><br>
+        <sup><i>(EN)</i></sup>Customer status.
+      properties:
+        code:
+          type: string
+          description: status code
+
+  examples:
+    GetCustomerByFilterResponseExample:
+      value:
+        - name: "Arely Martinez"
+          gender:
+            code: "F"
+          age: 26
+          identification:
+            type:
+              code: IDCD
+              name: "Cédula"
+            identifier:
+              value: '6319392560365'
+          address:
+            value: "Urdeza Este"
+          phoneAddress:
+            description: '1601739873'
+          customerId: '81082618178504464547453131915'
+          password: streqwda2ing
+          status:
+            code: "Activo"
+    PostCustomerRequestExample:
+      value:
+        name: 'Arely Martinez '
+        gender:
+          code: F
+        age: 26
+        identification:
+          type:
+            code: IDCD
+            name: "Cédula"
+          identifier:
+            value: '4884853016090'
+        address:
+          value: "Urdeza Este"
+        phoneAddress:
+          description: '321143324'
+        customerId: '568470661289138572607562477598'
+        password: string
+        status:
+          code: "Activo"
+    PutCustomerRequestExample:
+      value:
+        name: "Arely Denise Martinez"
+        gender:
+          code: F
+        age: 27
+        identification:
+          type:
+            code: IDCD
+            name: "Cédula"
+          identifier:
+            value: '3501287344689'
+        address:
+          value: "Algarrobos"
+        phoneAddress:
+          description: '0702854996'
+        status:
+          code: string
+
+
+
+
+
+
+
+
+
+
