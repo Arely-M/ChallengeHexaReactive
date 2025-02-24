@@ -1,1 +1,11 @@
-spring.application.name=client
+server:
+  port: 8090
+
+spring:
+  application:
+    name: challenge-msa-sp-customer
+  r2dbc:
+    url: r2dbc:pool:postgresql://postgres:root@localhost:5432/challengeBank
+  output:
+    ansi:
+      enabled: ALWAYS

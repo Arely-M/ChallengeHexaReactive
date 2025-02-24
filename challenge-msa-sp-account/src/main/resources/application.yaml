@@ -1,1 +1,8 @@
-spring.application.name=account-movement
+spring:
+  application:
+    name: challenge-msa-sp-account
+  r2dbc:
+    url: r2dbc:pool:postgresql://postgres:root@localhost:5432/challengeBank
+  output:
+    ansi:
+      enabled: ALWAYS

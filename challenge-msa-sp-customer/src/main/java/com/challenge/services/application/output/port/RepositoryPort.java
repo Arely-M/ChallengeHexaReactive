@@ -1,4 +1,4 @@
-package com.challenge.services.application.input.port;
+package com.challenge.services.application.output.port;
 
 import com.challenge.services.input.server.models.Customer;
 import com.challenge.services.input.server.models.PatchCustomerRequest;
@@ -9,15 +9,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Validated
-public interface CustomerService {
-
-    Mono<Void> createCustomer(Mono<PostCustomerRequest> postCustomerRequest);
+public interface RepositoryPort {
+    Mono<Void> createCustomer(PostCustomerRequest postCustomerRequest);
 
     Flux<Customer> getCustomerByFilter(String customerId);
 
     Mono<Void> deleteCustomer(String customerId);
 
-    Mono<Void> putCustomer(String customerId, Mono<PutCustomerRequest> putCustomerRequest);
+    Mono<Void> putCustomer(String customerId, PutCustomerRequest putCustomerRequest);
 
-    Mono<Void> patchCustomer(String customerId, Mono<PatchCustomerRequest> patchCustomerRequestMono);
+    Mono<Void> patchCustomer(String customerId, PatchCustomerRequest patchCustomerRequest);
 }

@@ -17,7 +17,7 @@ tags:
     description: Customer Controller
 
 paths:
-  /support/v1/customers:
+  /support/customers:
     get:
       tags:
         - Customer
@@ -85,7 +85,7 @@ paths:
             <br><br>
             <sup><i>(EN)</i></sup> Insertion successful.
 
-  /support/v1/customers/{customerId}:
+  /support/customers/{customerId}:
     put:
       tags:
         - Customer
@@ -114,6 +114,36 @@ paths:
             examples:
               PutCustomerRequestExample:
                 $ref: '#/components/examples/PutCustomerRequestExample'
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Actualizacion exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Update successful.
+    patch:
+      tags:
+        - Customer
+      summary: "⁽ᴱˢ⁾ Edita una seccion del cliente. \n⁽ᴱᴺ⁾ Edit a section of the customer.\n"
+      operationId: PatchCustomer
+      parameters:
+        - name: customerId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+          description: customer identification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchCustomerRequest'
+            examples:
+              PatchCustomerRequestExample:
+                $ref: '#/components/examples/PatchCustomerRequestExample'
       responses:
         "200":
           description: |-
@@ -174,6 +204,14 @@ components:
         <sup><i>(EN)</i></sup>Customer information to be update.
       allOf:
         - $ref:  "#/components/schemas/PutCustomer"
+    PatchCustomerRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del cliente a actualizar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Customer information to update.
+      allOf:
+        - $ref:  "#/components/schemas/PatchCustomer"
 
     Address:
       type: object
@@ -191,8 +229,6 @@ components:
       allOf:
         - $ref: '#/components/schemas/Person'
         - type: object
-          required:
-            - customerId
           properties:
             customerId:
               type: string
@@ -353,6 +389,22 @@ components:
         code:
           type: string
           description: status code
+    PatchCustomer:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información del cliente.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about a customer.
+      properties:
+        password:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Contraseña del cliente.
+            <br><br>
+            <sup><i>(EN)</i></sup>Customer password.
+          minLength: 6
+        status:
+          $ref: '#/components/schemas/Status'
 
   examples:
     GetCustomerByFilterResponseExample:
@@ -413,13 +465,9 @@ components:
           description: '0702854996'
         status:
           code: string
-
-
-
-
-
-
-
-
-
+    PatchCustomerRequestExample:
+      value:
+        password: 231dQEedstring
+        status:
+          code: Enabled
 

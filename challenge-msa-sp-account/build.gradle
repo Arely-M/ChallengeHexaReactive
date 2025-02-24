@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.9'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.openapi.generator' version '6.0.0'
 }
 
 def packageName = 'com.challenge.services'
@@ -29,20 +30,57 @@ repositories {
 dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.6.3'
 	implementation group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.6.3'
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-	runtimeOnly 'org.postgresql:postgresql'
-	runtimeOnly 'org.postgresql:r2dbc-postgresql'
+	// DB
+	implementation 'org.postgresql:r2dbc-postgresql:1.0.2.RELEASE'
+	implementation 'io.r2dbc:r2dbc-spi'
+
+	implementation 'javax.annotation:javax.annotation-api:1.3.2'
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+	implementation 'io.swagger.core.v3:swagger-annotations:2.1.13'
+
+	implementation 'com.google.code.gson:gson:2.11.0'
 
 	// Unit Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
+openApiGenerate {
+	generatorName = "spring"
+	inputSpec = "$rootDir/src/main/resources/openapi.yaml"
+	outputDir = "$buildDir/generated".toString()
+	apiPackage = "${packageName}.input.server"
+	modelPackage = "${packageName}.input.server.models"
+	library = "spring-boot"
+	configOptions = [
+			skipDefaultInterface                    : "true",
+			useSpringBoot3                          : "true",
+			useJakartaEe                            : "true",
+			serializableModel                       : "true",
+			dateLibrary                             : "java8",
+			openApiNullable                         : "false",
+			reactive                                : "true",
+			apiFirst                                : "false",
+			delegatePattern                         : "false",
+			configPackage                           : "${packageName}.input.config",
+			sourceFolder                            : "src/main/java",
+			basePackage                             : "${packageName}.input",
+			disallowAdditionalPropertiesIfNotPresent: "true",
+			interfaceOnly                           : "true"
+	]
+}
+
+compileJava.dependsOn tasks.openApiGenerate
+
+sourceSets.main.java.srcDirs = ["$buildDir/generated/src/main/java", "src/main/java"]
 
 tasks.named('test') {
 	useJUnitPlatform()

@@ -1,0 +1,572 @@
+{
+	"info": {
+		"_postman_id": "9ad87fb6-1730-4912-a22b-2e541098561b",
+		"name": "ChallengeReactiveHexa",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "sp-customer",
+			"item": [
+				{
+					"name": "PostCustomer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Arely Martinez \",\n  \"gender\": {\n    \"code\": \"F\"\n  },\n  \"age\": 26,\n  \"identification\": {\n    \"type\": {\n      \"code\": \"IDCD\",\n      \"name\": \"Cédula\"\n    },\n    \"identifier\": {\n      \"value\": \"1205361001\"\n    }\n  },\n  \"address\": {\n    \"value\": \"Urdeza Este\"\n  },\n  \"phoneAddress\": {\n    \"description\": \"321143324\"\n  },\n  \"password\": \"string\",\n  \"status\": {\n    \"code\": \"Enable\"\n  }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8090/support/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"support",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCustomerByFilter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/support/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"customers"
+							],
+							"query": [
+								{
+									"key": "customerId",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutCustomer",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Arely Denise Martinez\",\n  \"gender\": {\n    \"code\": \"F\"\n  },\n  \"age\": 27,\n  \"identification\": {\n    \"type\": {\n      \"code\": \"IDCD\",\n      \"name\": \"Cédula\"\n    },\n    \"identifier\": {\n      \"value\": \"1205361007\"\n    }\n  },\n  \"address\": {\n    \"value\": \"Algarrobos\"\n  },\n  \"phoneAddress\": {\n    \"description\": \"0702854996\"\n  },\n  \"status\": {\n    \"code\": \"Enable\"\n  }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/support/customers/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"customers",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PatchCustomer",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"password\": \"231dQEedstr\",\n  \"status\": {\n    \"code\": \"Disable\"\n  }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/support/customers/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"customers",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCustomer",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/support/customers/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"customers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "sp-account-movement",
+			"item": [
+				{
+					"name": "PostAccount",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": {\n    \"code\": \"A\",\n    \"description\": \"Ahorro\"\n  },\n  \"initialBalance\": 20,\n  \"status\": {\n    \"code\": \"Enable\"\n  },\n  \"customerId\": 2\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/support/accounts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAccountByFilter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/support/accounts?accountNumber=2802236401",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts"
+							],
+							"query": [
+								{
+									"key": "accountNumber",
+									"value": "2802236401"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAccountById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/support/accounts/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutAccount",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountNumber\": \"2802236401\",\n  \"type\": {\n    \"code\": \"C\",\n    \"description\": \"Corriente\"\n  },\n  \"initialBalance\": 200,\n  \"status\": {\n    \"code\": \"Enabled\"\n  },\n  \"customerId\": 3\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/support/accounts/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PatchAccount",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": {\n    \"code\": \"Disable\"\n  }\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/support/accounts/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteAccount",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/support/accounts/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostTransaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": {\n    \"code\": \"D\",\n    \"description\": \"DEPOSITO\"\n  },\n  \"value\": -50\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/support/accounts/transactions?accountNumber=2802236402",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts",
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "accountNumber",
+									"value": "2802236402"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTransaction",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/support/accounts/transactions?accountId=8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts",
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "accountId",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PutTransaction",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"date\": \"2025-02-22\",\n  \"type\": {\n    \"code\": \"D\",\n    \"description\": \"DEPOSITO\"\n  },\n  \"value\": 25,\n  \"balance\": 201,\n  \"accountId\": 9\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/support/accounts/transactions/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts",
+								"transactions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PatchTransaction",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": {\n    \"code\": \"R\",\n    \"description\": \"RETIRO\"\n  },\n  \"value\": 30\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/support/accounts/transactions/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts",
+								"transactions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteTransaction",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/support/accounts/transactions/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts",
+								"transactions",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetReport",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/support/accounts/transactions/report?accountNumber=2802236402&startDate=2025-02-20&endDate=2025-02-24",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"support",
+								"accounts",
+								"transactions",
+								"report"
+							],
+							"query": [
+								{
+									"key": "accountNumber",
+									"value": "2802236402"
+								},
+								{
+									"key": "startDate",
+									"value": "2025-02-20"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-02-24"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

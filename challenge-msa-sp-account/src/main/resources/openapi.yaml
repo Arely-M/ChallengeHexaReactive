@@ -1,0 +1,989 @@
+openapi: 3.0.0
+info:
+  title: MSA Support - Account
+  description: |
+    <sup>(ES)</sup> Microservicio de soporte que permite la consulta, creación, actualización, edición y eliminacion de cuentas y movimientos. <br><br>
+  version: 1.0.0
+  contact:
+    name: Arely Martinez
+    email: ardmarti@pichincha.com
+servers:
+  - url: http://localhost:8080
+    description: Development
+tags:
+  - name: Account
+    description: Account Controller
+  - name: Transaction
+    description: Transaction Controller
+
+paths:
+  /support/accounts:
+    get:
+      tags:
+        - Account
+      summary: "⁽ᴱˢ⁾ Devuelve una lista de cuentas. \n⁽ᴱᴺ⁾ Retrieves a list of accounts.\n"
+      operationId: GetAccountByFilter
+      description: |
+        ### Details:
+        <sup>(ES)</sup> Permite realizar la consulta de cuentas.⠀<br>
+        <sup>(EN)</sup> Allows consult accounts. <br><br>
+        
+        | Expected Result  | Path Parameter | Query Parameter                 |
+        | ---------------- | ------------   | -----------------------------------|
+        | Retrieves a list of accounts| - | -   |
+        | Retrieves a accounta| - | accountNumber   |
+      parameters:
+        - name: accountNumber
+          required: false
+          in: query
+          schema:
+            type: string
+            pattern: "^[0-9]+$"
+          description: account number
+      responses:
+        "200":
+          description: |
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Busqueda exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Successful search.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAccountByFilterResponse'
+              examples:
+                GetAccountByFilterResponseExample:
+                  $ref: '#/components/examples/GetAccountByFilterResponseExample'
+    post:
+      tags:
+        -  Account
+      summary: "⁽ᴱˢ⁾ Guarda una cuenta. \n⁽ᴱᴺ⁾ Save an account.\n"
+      operationId: PostAccount
+      description: |-
+        <sup>(ES)</sup> Permite realizar el guardado de cuentas.⠀<br>
+        <sup>(EN)</sup> Allows you to save accounts. <br><br>
+      requestBody:
+        description: |-
+          <sup><i>(ES)</i></sup> Cuenta a crear.
+          <br><br>
+          <sup><i>(EN)</i></sup> Account to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostAccountRequest'
+            examples:
+              PostAccountRequestExample:
+                $ref: '#/components/examples/PostAccountRequestExample'
+      responses:
+        "201":
+          description: |-
+            <b>`Created`</b>
+            <sup><i>(ES)</i></sup> Inserción exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Insertion successful.
+
+  /support/accounts/{accountId}:
+    get:
+      tags:
+        - Account
+      summary: "⁽ᴱˢ⁾ Devuelve una cuenta. \n⁽ᴱᴺ⁾ Returns an account.\n"
+      operationId: GetAccountById
+      description: |
+        ### Details:
+        <sup>(ES)</sup> Permite realizar la consulta de una cuenta.⠀<br>
+        <sup>(EN)</sup> Allows consult an account. <br><br>
+        
+        | Expected Result  | Path Parameter | Query Parameter                 |
+        | ---------------- | ------------   | -----------------------------------|
+        | Returns an account by id| accountId | -   |
+      parameters:
+        - name: accountId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+          description: account identification
+      responses:
+        "200":
+          description: |
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Busqueda exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Successful search.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAccountByIdResponse'
+              examples:
+                GetAccountByIdResponseExample:
+                  $ref: '#/components/examples/GetAccountByIdResponseExample'
+    put:
+      tags:
+        - Account
+      summary: "⁽ᴱˢ⁾ Actualizar la cuenta. ⁽ᴱᴺ⁾ Update the account."
+      description: |-
+        <sup>(ES)</sup> Permite realizar el actualizado de la cuenta.⠀<br>
+        <sup>(EN)</sup> Allows you to update your account. <br><br>
+      operationId: PutAccount
+      parameters:
+        - name: accountId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+          description: account identification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutAccountRequest'
+            examples:
+              PutAccountRequestExample:
+                $ref: '#/components/examples/PutAccountRequestExample'
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Actualizacion exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Update successful.
+    patch:
+      tags:
+        - Account
+      summary: "⁽ᴱˢ⁾ Edita el estado de una cuenta. \n⁽ᴱᴺ⁾ Edit the status of an account.\n"
+      operationId: PatchAccount
+      parameters:
+        - name: accountId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+          description: account identification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchAccountRequest'
+            examples:
+              PatchAccountRequestExample:
+                $ref: '#/components/examples/PatchAccountRequestExample'
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Actualizacion exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Update successful.
+    delete:
+      tags:
+        - Account
+      summary: "⁽ᴱˢ⁾ Elimina la cuenta. ⁽ᴱᴺ⁾ Delete the account."
+      description: |-
+        <sup>(ES)</sup> Permite realizar el eliminado de la cuente.⠀<br>
+        <sup>(EN)</sup> Allows you to delete accounts. <br><br>
+      operationId: DeleteAccount
+      parameters:
+        - name: accountId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+          description: account identification
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Eliminación exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Deletion successful.            
+
+  /support/accounts/transactions:
+    get:
+      tags:
+        - Transaction
+      summary: "⁽ᴱˢ⁾ Devuelve una lista de movimientos de una cuenta. \n⁽ᴱᴺ⁾ Returns a list of transactions in an account.\n"
+      operationId: GetAccountTransactionByFilter
+      description: |
+        ### Details:
+        <sup>(ES)</sup> Permite realizar la consulta de movimientos de una cuenta.⠀<br>
+        <sup>(EN)</sup> Allows you to check account movements. <br><br>
+        
+        | Expected Result  | Path Parameter | Query Parameter                 |
+        | ---------------- | ------------   | -----------------------------------|
+        | Retrieves a list of transactions from an account| - | accountId   |
+      parameters:
+        - name: accountId
+          required: true
+          in: query
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+          description: account identification
+      responses:
+        "200":
+          description: |
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Busqueda exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Successful search.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAccountTransactionByFilterResponse'
+              examples:
+                GetAccountTransactionByFilterResponseExample:
+                  $ref: '#/components/examples/GetAccountTransactionByFilterResponseExample'
+    post:
+      tags:
+        -  Transaction
+      summary: "⁽ᴱˢ⁾ Guarda un movimiento de una cuenta. \n⁽ᴱᴺ⁾ Saves a transaction in an account. \n"
+      operationId: PostAccountTransaction
+      description: |-
+        <sup>(ES)</sup> Permite realizar el guardado de movimientos.⠀<br>
+        <sup>(EN)</sup> Allows you to save movements. <br><br>
+      parameters:
+        - name: accountNumber
+          required: true
+          in: query
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+          description: account number
+      requestBody:
+        description: |-
+          <sup><i>(ES)</i></sup> Movimiento a crear para una cuenta.
+          <br><br>
+          <sup><i>(EN)</i></sup> Movement to create for an account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostAccountTransactionRequest'
+            examples:
+              PostAccountTransactionRequestExample:
+                $ref: '#/components/examples/PostAccountTransactionRequestExample'
+      responses:
+        "201":
+          description: |-
+            <b>`Created`</b><br><br>
+            <sup><i>(ES)</i></sup> Inserción exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Insertion successful.
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/PostAccountTransactionResponse"
+              examples:
+                PostAccountTransactionResponseExample:
+                  $ref: '#/components/examples/PostAccountTransactionResponseExample'
+
+  /support/accounts/transactions/{transactionId}:
+    put:
+      tags:
+        - Transaction
+      summary: "⁽ᴱˢ⁾ Actualizar el movimiento de una cuenta. ⁽ᴱᴺ⁾ UUpdate an account movement."
+      description: |-
+        <sup>(ES)</sup> Permite realizar el actualizado del movimiento.⠀<br>
+        <sup>(EN)</sup> Allows you to update movement. <br><br>
+      operationId: PutAccountTransaction
+      parameters:
+        - name: transactionId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 30
+            pattern: "^[0-9]+$"
+          description: transaction identification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutAccountTransactionRequest'
+            examples:
+              PutAccountTransactionRequestExample:
+                $ref: '#/components/examples/PutAccountTransactionRequestExample'
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Actualizacion exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Update successful.
+    patch:
+      tags:
+        - Transaction
+      summary: "⁽ᴱˢ⁾ Edita seccion de un movimiento. \n⁽ᴱᴺ⁾ Edit section of a movement.\n"
+      operationId: PatchAccountTransaction
+      parameters:
+        - name: transactionId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+            example: "1"
+          description: transaction identification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchAccountTransactionRequest'
+            examples:
+              PatchAccountTransactionRequestExample:
+                $ref: '#/components/examples/PatchAccountTransactionRequestExample'
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Actualizacion exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Update successful.
+    delete:
+      tags:
+        - Transaction
+      summary: "⁽ᴱˢ⁾ Elimina el movimiento. ⁽ᴱᴺ⁾ Delete the movement."
+      description: |-
+        <sup>(ES)</sup> Permite realizar el eliminado del movimiento.⠀<br>
+        <sup>(EN)</sup> Allows you to delete movement. <br><br>
+      operationId: DeleteAccountTransaction
+      parameters:
+        - name: transactionId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 30
+            pattern: "^[0-9]+$"
+          description: transaction identification
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Eliminación exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Deletion successful.            
+
+  /support/accounts/transactions/report:
+    get:
+      tags:
+        - Transaction
+      summary: "⁽ᴱˢ⁾ Devuelve un report de movmientos comprendidos entre un rango de fechas. \n⁽ᴱᴺ⁾ Returns a report of movements within a range of dates.\n"
+      operationId: GetAccountTransactionReport
+      description: |
+        ### Details:
+        <sup>(ES)</sup> Permite realizar la consulta de movimientos.⠀<br>
+        <sup>(EN)</sup> Allows consult movements. <br><br>
+        
+        | Expected Result  | Path Parameter | Query Parameter                 |
+        | ---------------- | ------------   | -----------------------------------|
+        | Retrieves a list of movements| - | -   |
+      parameters:
+        - name: accountNumber
+          required: true
+          in: query
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 10
+            pattern: "^[0-9]+$"
+          description: account number
+        - name: startDate
+          required: true
+          in: query
+          schema:
+            type: string
+          description: Start date of movements
+        - name: endDate
+          required: true
+          in: query
+          schema:
+            type: string
+          description: End date of movements
+      responses:
+        "200":
+          description: |
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Busqueda exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Successful search.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAccountTransactionReportResponse'
+              examples:
+                GetAccountTransactionReportResponseExample:
+                  $ref: '#/components/examples/GetAccountTransactionReportResponseExample'
+
+components:
+  schemas:
+    GetAccountByFilterResponse:
+      type: array
+      description: |
+        <sup><i>(ES)</i></sup>Respuesta con el listado de cuentas.
+        <br><br>
+        <sup><i>(EN)</i></sup>Responce with the list of accounts.
+      items:
+        $ref : "#/components/schemas/Account"
+    GetAccountByIdResponse:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Respuesta con la información de la cuenta.
+        <br><br>
+        <sup><i>(EN)</i></sup>Response with account information.
+      allOf:
+        - $ref:  "#/components/schemas/Account"
+    PostAccountRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información de la cuenta a guardar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Account information to be saved.
+      allOf:
+        - $ref:  "#/components/schemas/PostAccount"
+    PostAccount:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de una cuenta.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about an account.
+      properties:
+        type:
+          $ref: "#/components/schemas/Type"
+        initialBalance:
+          type: number
+          description: |
+            <sup><i>(ES)</i></sup>Saldo inicial de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Initial account balance.
+        status:
+          $ref: '#/components/schemas/Status'
+        customerId:
+          type: number
+          description: |
+            <sup><i>(ES)</i></sup>Identificación del cliente.
+            <br><br>
+            <sup><i>(EN)</i></sup>Customer identification.
+          minLength: 1
+          maxLength: 30
+          pattern: "^[0-9]+$"
+
+    PutAccountRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información de la cuenta a actualizar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Account information to update.
+      allOf:
+        - $ref:  "#/components/schemas/PutAccount"
+    PatchAccountRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información de la cuenta a actualizar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Account information to update.
+      allOf:
+        - $ref:  "#/components/schemas/PatchAccount"
+    Account:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de una cuenta.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about an account.
+      properties:
+        accountId:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Identificación de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account identification.
+          minLength: 1
+          maxLength: 10
+          pattern: "^[0-9]+$"
+        accountNumber:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Número de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account number.
+          minLength: 1
+          maxLength: 10
+          pattern: "^[0-9]+$"
+        type:
+          $ref: "#/components/schemas/Type"
+        initialBalance:
+          type: number
+          description: |
+            <sup><i>(ES)</i></sup>Saldo inicial de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Initial account balance.
+        status:
+          $ref: '#/components/schemas/Status'
+        customerId:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Identificación del cliente.
+            <br><br>
+            <sup><i>(EN)</i></sup>Customer identification.
+          minLength: 1
+          maxLength: 30
+          pattern: "^[0-9]+$"
+    Type:
+      type: object
+      properties:
+        code:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Código de tipo de cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account type code.
+          minLength: 1
+        description:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Descripción del tipo de cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account Type description.
+          minLength: 1
+          maxLength: 45
+          pattern: "^[a-zA-Z\\s]+$"
+    Status:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Estado de la cuenta.
+        <br><br>
+        <sup><i>(EN)</i></sup>Account status.
+      properties:
+        code:
+          type: string
+          description: status code
+    PutAccount:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de una cuenta.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about an account.
+      properties:
+        accountNumber:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Número de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account number.
+          minLength: 1
+          maxLength: 10
+          pattern: "^[0-9]+$"
+        type:
+          $ref: "#/components/schemas/Type"
+        initialBalance:
+          type: number
+          description: |
+            <sup><i>(ES)</i></sup>Saldo inicial de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Initial account balance.
+        status:
+          $ref: '#/components/schemas/Status'
+        customerId:
+          type: number
+          description: |
+            <sup><i>(ES)</i></sup>Identificación del cliente.
+            <br><br>
+            <sup><i>(EN)</i></sup>Customer identification.
+          minLength: 1
+          maxLength: 30
+          pattern: "^[0-9]+$"
+    PatchAccount:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de una cuenta.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about an account.
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+
+    GetAccountTransactionByFilterResponse:
+      type: array
+      description: |
+        <sup><i>(ES)</i></sup>Respuesta con el listado de movimientos de una cuenta.
+        <br><br>
+        <sup><i>(EN)</i></sup>Response with a list of account transactions.
+      items:
+        $ref : "#/components/schemas/Transaction"
+    PostAccountTransactionRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del movimiento a guardar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Movement information to be saved.
+      allOf:
+        - $ref:  "#/components/schemas/PostAccountTransaction"
+    PostAccountTransaction:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de un movimiento.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about an movement.
+      properties:
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        value:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Monto del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Amount of movement.
+    PostAccountTransactionResponse:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del movimiento a guardar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Movement information to be saved.
+      allOf:
+        - $ref:  "#/components/schemas/Transaction"
+    Transaction:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de una transacción.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing transaction information.
+      properties:
+        transactionId:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Identificación del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Movement identification.
+          minLength: 1
+          maxLength: 30
+          pattern: "^[0-9]+$"
+        date:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Fecha del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Date of movement.
+          format: date
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        value:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Valor del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Value of movement.
+        balance:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Saldo del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Balance of the movement.
+        accountId:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Identificación de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account identification.
+          minLength: 1
+          maxLength: 30
+          pattern: "^[0-9]+$"
+    TransactionType:
+      type: object
+      properties:
+        code:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Código de tipo de movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Movement type code.
+        description:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Descripción del tipo de movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Movement Type description.
+          minLength: 1
+          maxLength: 45
+          pattern: "^[a-zA-Z\\s]+$"
+    PutAccountTransactionRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del movimiento a actualizar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Movement information to be update.
+      allOf:
+        - $ref:  "#/components/schemas/PutTransaction"
+    PutTransaction:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de un movimiento.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about a movement.
+      properties:
+        date:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Fecha del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Date of movement.
+          format: date
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        value:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Valor del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Value of movement.
+        balance:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Saldo del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Balance of the movement.
+        accountId:
+          type: number
+          description: |
+            <sup><i>(ES)</i></sup>Identificación de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account identification.
+          minLength: 1
+          maxLength: 30
+          pattern: "^[0-9]+$"
+    PatchAccountTransactionRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del movimiento a actualizar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Movement information to be update.
+      allOf:
+        - $ref:  "#/components/schemas/PatchTransaction"
+    PatchTransaction:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de un movimiento.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about a movement.
+      properties:
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        value:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Valor del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Value of movement.
+
+    GetAccountTransactionReportResponse:
+      type: array
+      description: |
+        <sup><i>(ES)</i></sup>Respuesta con el listado de movimientos.
+        <br><br>
+        <sup><i>(EN)</i></sup>Responce with the list of movements.
+      items:
+        $ref : "#/components/schemas/TransactionReport"
+    TransactionReport:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de un movimiento.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about an movement.
+      properties:
+        date:
+          type: string
+          format: date
+          description: |
+            <sup><i>(ES)</i></sup>Fecha del report.
+            <br><br>
+            <sup><i>(EN)</i></sup>Report date.
+          minLength: 1
+        customerName:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Nombre del cliente.
+            <br><br>
+            <sup><i>(EN)</i></sup>Customer name.
+          minLength: 1
+          maxLength: 40
+        accountNumber:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Numero de cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account number.
+          minLength: 1
+          maxLength: 30
+        accountType:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Tipo de cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Type number.
+          minLength: 1
+        initialBalance:
+          type: number
+          description: |
+            <sup><i>(ES)</i></sup>Saldo inicial de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Initial account balance.
+        status:
+          $ref: '#/components/schemas/Status'
+        value:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Monto del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Amount of movement.
+          minLength: 1
+        availableBalance:
+          title: value
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Monto disponible del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Available amount of the movement.
+          minLength: 1
+
+
+  examples:
+    GetAccountByFilterResponseExample:
+      value:
+        - accountId: '0358921080'
+          accountNumber: '916999756'
+          type:
+            code: Ahorro
+            description: esLrIhwdkslLjxmgxjIvUJSOyFBkgxReZFLLtLHiOxg
+          initialBalance: 0
+          status:
+            code: string
+          customerId: '327893875780748161755396843141'
+        - accountId: '0358921080'
+          accountNumber: '916999756'
+          type:
+            code: string
+            description: esLrIhwdkslLjxmgxjIvUJSOyFBkgxReZFLLtLHiOxg
+          initialBalance: 0
+          status:
+            code: string
+          customerId: '327893875780748161755396843141'
+    PostAccountRequestExample:
+      value:
+        type:
+          code: C
+          description: Corriente
+        initialBalance: 20
+        status:
+          code: Enable
+        customerId: 2
+
+    GetAccountByIdResponseExample:
+      value:
+        accountId: '5124814641'
+        accountNumber: '0626834818'
+        type:
+          code: CTE
+          description: eNkzvMzYKvKDitSictJWJsxjlm oBznHPcy
+        initialBalance: 200
+        status:
+          code: 'Activo'
+        customerId: '978941375666779201730629821220'
+    PutAccountRequestExample:
+      value:
+        accountNumber: '5577376954'
+        type:
+          code: A
+          description: Ahorro
+        initialBalance: 200
+        status:
+          code: 'Enable'
+        customerId: 3
+    PatchAccountRequestExample:
+      value:
+        status:
+          code: "Disabled"
+
+    GetAccountTransactionByFilterResponseExample:
+      value:
+        - transactionId: '2112808019083068021244'
+          date: '2025-02-22'
+          type:
+            code: "D"
+            description: 'Deposito'
+          value: 10
+          balance: 210
+          accountId: '146413194162194211733656319471'
+        - transactionId: '2112808019083068021244'
+          date: '2025-02-22'
+          type:
+            code: "R"
+            description: 'Retiro'
+          value: 20
+          balance: 190
+          accountId: '146413194162194211733656319471'
+    PostAccountTransactionRequestExample:
+      value:
+        type:
+          code: R
+          description: RETIRO
+        value: 20
+    PostAccountTransactionResponseExample:
+      value:
+        transactionId: '375002887710982711985369354800'
+        date: '2025-02-22'
+        type:
+          code: R
+          description: qnHDwnHvxxtxyBMeUxioSv
+        value: 20
+        balance: 180
+        accountId: '385503749884996027576274695243'
+    PutAccountTransactionRequestExample:
+      value:
+        date: '2025-02-22'
+        type:
+          code: D
+          description: DEPOSITO
+        value: 10
+        balance: 200
+        accountId: 1
+    PatchAccountTransactionRequestExample:
+      value:
+        type:
+          code: R
+          description: Retiro
+        value: 40
+
+    GetAccountTransactionReportResponseExample:
+      value:
+        - date: '2025-02-22'
+          customerName: Arely Martinez
+          accountNumber: '23456789097'
+          accountType: 'Corriente'
+          initialBalance: 200
+          status:
+            code: Enabled
+          value: 20
+          availableBalance: 220
