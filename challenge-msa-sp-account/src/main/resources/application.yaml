@@ -1,8 +1,24 @@
+server:
+  port: 8080
+
 spring:
+  main:
+    allow-bean-definition-overriding: on
   application:
     name: challenge-msa-sp-account
   r2dbc:
     url: r2dbc:pool:postgresql://postgres:root@localhost:5432/challengeBank
+  redis:
+    database: 0
+    host: redis-19515.c13.us-east-1-3.ec2.redns.redis-cloud.com
+    port: 19515
+    password: gym9SLXh3sVjBemabw2opFpbFHapmqDt
+    ssl: true
+    session:
+      ttl: 86400
+      unique: false
   output:
     ansi:
       enabled: ALWAYS
+
+

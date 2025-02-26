@@ -10,11 +10,13 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface ReportReactiveRepository extends ReactiveCrudRepository<RepostEntity, String> {
 
-    @Query("SELECT t.date, c.name, a.accountNumber, a.accountType, a.initialBalance, a.status, t.value, t.balance\n" +
+    @Query("SELECT t.date, c.name, a.accountNumber, a.accounttype, t.initialbalance, a.status, t.value, t.balance\n" +
             "FROM public.transactions t\n" +
             "INNER JOIN account a ON a.accountid = t.accountid\n" +
             "INNER JOIN customer c ON c.customerid = a.customerid\n" +
             "WHERE a.accountNumber = :accountnumber\n" +
-            "AND t.date BETWEEN :startdate AND :enddate")
+            "AND t.date BETWEEN :startdate AND :enddate\n" +
+            "ORDER BY t.transactionid Asc")
     Flux<RepostEntity> findReport(@Param("accountnumber") String accountNumber, @Param("startdate") String startDate, @Param("enddate") String endDate);
+
 }

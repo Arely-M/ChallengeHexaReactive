@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Repository.iml" filepath="$PROJECT_DIR$/.idea/Repository.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/challenge-msa-sp-account.main.iml" filepath="$PROJECT_DIR$/.idea/modules/challenge-msa-sp-account.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/challenge-msa-sp-customer.main.iml" filepath="$PROJECT_DIR$/.idea/modules/challenge-msa-sp-customer.main.iml" />
     </modules>
   </component>

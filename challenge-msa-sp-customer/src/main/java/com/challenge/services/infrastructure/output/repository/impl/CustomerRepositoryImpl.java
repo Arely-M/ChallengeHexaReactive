@@ -1,15 +1,12 @@
 package com.challenge.services.infrastructure.output.repository.impl;
 
-import com.challenge.services.infrastructure.exception.CustomerNotFoundException;
-import com.challenge.services.infrastructure.input.adapter.rest.error.resolver.ErrorModel;
+import com.challenge.services.infrastructure.exception.CustomerException;
 import com.challenge.services.infrastructure.output.repository.CustomerReactiveRepository;
 import com.challenge.services.infrastructure.output.repository.CustomerRepository;
 import com.challenge.services.infrastructure.output.repository.entity.CustomerEntity;
 import lombok.Generated;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.Mapping;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -26,11 +23,9 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     private final CustomerReactiveRepository customerReactiveRepository;
 
     @Override
-    public Mono<Void> saveCustomer(CustomerEntity customerEntity) {
+    public Mono<CustomerEntity> saveCustomer(CustomerEntity customerEntity) {
         log.info("|---> saveCustomer in repository");
-        return customerReactiveRepository
-                .save(customerEntity)
-                .then();
+        return customerReactiveRepository.save(customerEntity);
     }
 
     @Override
@@ -38,7 +33,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         log.info("|---> findByCustomerId in repository");
         return Optional.ofNullable(customerId)
                 .map(s -> customerReactiveRepository.findById(Integer.valueOf(s)))
-                .orElse(Mono.error(new CustomerNotFoundException()))
+                .orElse(Mono.error(new CustomerException()))
                 .doOnError(error -> log.error("<---| findByCustomerId - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
 
     }
@@ -55,11 +50,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public Mono<Void> updateCustomer(String customerId, CustomerEntity customerEntity) {
         log.info("|---> updateCustomer in repository");
         return customerReactiveRepository.findById(Integer.valueOf(customerId))
-                .switchIfEmpty(Mono.error(new CustomerNotFoundException()))
+                .switchIfEmpty(Mono.error(new CustomerException()))
                 .onErrorMap(error -> {
                     log.error("<---| updateCustomer - Error al buscar el cliente con el id: [{}] y el error es: [{}]", customerId,
                             error.getMessage());
-                    return new CustomerNotFoundException(error_002_Customer_Not_Fount);
+                    return new CustomerException(error_002_Customer_Not_Fount);
                 })
                 .flatMap(existingCustomer -> {
                     existingCustomer.setName(customerEntity.getName());
@@ -78,11 +73,11 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public Mono<Void> updatePartialCustomer(String customerId, CustomerEntity customerEntity) {
         log.info("|---> updatePartialCustomer in repository");
         return customerReactiveRepository.findById(Integer.valueOf(customerId))
-                .switchIfEmpty(Mono.error(new CustomerNotFoundException()))
+                .switchIfEmpty(Mono.error(new CustomerException()))
                 .onErrorMap(error -> {
                     log.error("<---| updatePartialCustomer - Error al buscar el cliente con el id: [{}] y el error es: [{}]", customerId,
                             error.getMessage());
-                    return new CustomerNotFoundException(error_002_Customer_Not_Fount);
+                    return new CustomerException(error_002_Customer_Not_Fount);
                 })
                 .flatMap(existingCustomer -> {
                     existingCustomer.setPassword(customerEntity.getPassword());

@@ -6,23 +6,37 @@ import com.challenge.services.input.server.models.Customer;
 import com.challenge.services.input.server.models.PatchCustomerRequest;
 import com.challenge.services.input.server.models.PostCustomerRequest;
 import com.challenge.services.input.server.models.PutCustomerRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class CustomerServiceImpl implements CustomerService {
     private final RepositoryPort repositoryPort;
+    private final RedisTemplate template;
+    private final ChannelTopic topic;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Mono<Void> createCustomer(Mono<PostCustomerRequest> postCustomerRequestMono) {
         log.info("|--> createCustomer start");
         return postCustomerRequestMono
                 .flatMap(repositoryPort::createCustomer)
+                .map(customer -> {
+                    String customerSave = new Gson().toJson(customer);
+                    log.info("|--> Customer: {}", customerSave);
+                    return template.convertAndSend(topic.getTopic(), customerSave);
+                })
                 .doOnSuccess(response -> log.info("<--| createCustomer finished successfully"))
                 .doOnError(error -> log.error("<--| createCustomer finished with error", error))
                 .then();

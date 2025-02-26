@@ -5,10 +5,13 @@ import com.challenge.services.infrastructure.output.repository.entity.RepostEnti
 import com.challenge.services.infrastructure.output.repository.entity.TransactionEntity;
 import com.challenge.services.infrastructure.output.util.Constants;
 import com.challenge.services.input.server.models.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -17,6 +20,7 @@ public interface PostgreSQLRepositoryAdapterMapper {
     PostgreSQLRepositoryAdapterMapper INSTANCE = Mappers.getMapper(PostgreSQLRepositoryAdapterMapper.class);
 
 
+    @Mapping(target = "initialBalance", constant= Constants.INITIAL_BALANCE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", source = "status.code")
     @Mapping(target = "accountNumber", expression = "java(accountNumberRandom())")
@@ -90,7 +94,8 @@ public interface PostgreSQLRepositoryAdapterMapper {
     @Mapping(target = "date", expression = "java(currentDate())")
     @Mapping(target = "balance", source = "accountEntity.initialBalance")
     @Mapping(target = "accountId", source = "accountEntity.id")
-    TransactionEntity mapperToTransactionEntity(PostAccountTransactionRequest postAccountTransactionRequest, AccountEntity accountEntity);
+    @Mapping(target = "initialBalance", source = "initialBalance")
+    TransactionEntity mapperToTransactionEntity(PostAccountTransactionRequest postAccountTransactionRequest, AccountEntity accountEntity, double initialBalance);
 
     default String currentDate () {
         return LocalDate.now().toString();
@@ -118,10 +123,12 @@ public interface PostgreSQLRepositoryAdapterMapper {
         }
     }
 
+    @Mapping(target = "initialBalance", source = "balance")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "transactionType", source = "type.description")
     TransactionEntity mapperPutAccountTransactionRequestToTransactionEntity(PutAccountTransactionRequest putAccountTransactionRequest);
 
+    @Mapping(target = "initialBalance", ignore = true)
     @Mapping(target = "transactionType", source = "type.description")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "date", ignore = true)
@@ -129,6 +136,9 @@ public interface PostgreSQLRepositoryAdapterMapper {
     @Mapping(target = "accountId", ignore = true)
     TransactionEntity mapperPatchAccountTransactionToTransactionEntity(PatchAccountTransactionRequest patchAccountTransactionRequest);
 
+    @Mapping(target = "availableBalance", source = "balance")
     @Mapping(target = "status.code", source = "status")
     TransactionReport mapperToTransactionReport(RepostEntity repostEntity);
+
+
 }

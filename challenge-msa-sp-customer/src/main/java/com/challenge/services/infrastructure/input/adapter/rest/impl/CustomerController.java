@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class CustomerApiController implements SupportApi {
+public class CustomerController implements SupportApi {
     private final CustomerService customerService;
 
     @Override

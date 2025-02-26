@@ -25,5 +25,6 @@ public class RepostEntity {
     private String status;
     private double value;
     @Column("balance")
-    private double availableBalance;
+    private double balance;
+
 }

@@ -21,6 +21,8 @@ public class TransactionEntity {
     private String transactionType;
     private double value;
     private double balance;
+    @Column("initialbalance")
+    private double initialBalance;
     @Column("accountid")
     private int accountId;
 }

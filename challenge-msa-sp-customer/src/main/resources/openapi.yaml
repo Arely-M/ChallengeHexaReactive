@@ -7,7 +7,6 @@ info:
   version: 1.0.0
   contact:
     name: Arely Martinez
-    email: ardmarti@pichincha.com
 servers:
   - url: http://localhost:8080
     description: Development

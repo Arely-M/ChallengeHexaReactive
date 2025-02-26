@@ -6,7 +6,6 @@ info:
   version: 1.0.0
   contact:
     name: Arely Martinez
-    email: ardmarti@pichincha.com
 servers:
   - url: http://localhost:8080
     description: Development
@@ -466,12 +465,6 @@ components:
       properties:
         type:
           $ref: "#/components/schemas/Type"
-        initialBalance:
-          type: number
-          description: |
-            <sup><i>(ES)</i></sup>Saldo inicial de la cuenta.
-            <br><br>
-            <sup><i>(EN)</i></sup>Initial account balance.
         status:
           $ref: '#/components/schemas/Status'
         customerId:
@@ -840,7 +833,7 @@ components:
           description: |
             <sup><i>(ES)</i></sup>Tipo de cuenta.
             <br><br>
-            <sup><i>(EN)</i></sup>Type number.
+            <sup><i>(EN)</i></sup>Type account.
           minLength: 1
         initialBalance:
           type: number
@@ -895,7 +888,6 @@ components:
         type:
           code: C
           description: Corriente
-        initialBalance: 20
         status:
           code: Enable
         customerId: 2
@@ -978,12 +970,12 @@ components:
 
     GetAccountTransactionReportResponseExample:
       value:
-        - date: '2025-02-22'
+        - date: '2025-02-24'
           customerName: Arely Martinez
           accountNumber: '23456789097'
-          accountType: 'Corriente'
+          accountType: "AHORRO"
           initialBalance: 200
           status:
-            code: Enabled
+            code: Enable
           value: 20
           availableBalance: 220

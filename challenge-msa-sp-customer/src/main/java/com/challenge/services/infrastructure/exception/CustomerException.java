@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @lombok.Getter
-public class CustomerNotFoundException extends RuntimeException {
+public class CustomerException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     private ErrorModel error;
 
-    public CustomerNotFoundException(ErrorModel error) {
+    public CustomerException(ErrorModel error) {
         super();
         this.error = error;
     }

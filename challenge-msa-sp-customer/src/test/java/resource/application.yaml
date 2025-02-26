@@ -2,8 +2,6 @@ server:
   port: 8090
 
 spring:
-  main:
-    allow-bean-definition-overriding: on
   application:
     name: challenge-msa-sp-customer
   r2dbc:

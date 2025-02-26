@@ -1,6 +1,6 @@
 package com.challenge.services.infrastructure.input.adapter.rest.error;
 
-import com.challenge.services.infrastructure.exception.CustomerNotFoundException;
+import com.challenge.services.infrastructure.exception.CustomerException;
 import com.challenge.services.infrastructure.input.adapter.rest.error.resolver.ErrorModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,9 +15,9 @@ public class GlobalControllerExceptionHandler {
         return new ErrorModel("001","Error, valor nulo.");
     }
 
-    @ExceptionHandler(value = {CustomerNotFoundException.class})
+    @ExceptionHandler(value = {CustomerException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorModel CustomerNotFoundException(CustomerNotFoundException ex) {
+    public ErrorModel CustomerException(CustomerException ex) {
         return ex.getError();
     }
 

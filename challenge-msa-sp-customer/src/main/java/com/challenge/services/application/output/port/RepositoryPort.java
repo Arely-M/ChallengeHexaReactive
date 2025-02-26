@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 @Validated
 public interface RepositoryPort {
-    Mono<Void> createCustomer(PostCustomerRequest postCustomerRequest);
+    Mono<com.challenge.services.domain.Customer> createCustomer(PostCustomerRequest postCustomerRequest);
 
     Flux<Customer> getCustomerByFilter(String customerId);
 

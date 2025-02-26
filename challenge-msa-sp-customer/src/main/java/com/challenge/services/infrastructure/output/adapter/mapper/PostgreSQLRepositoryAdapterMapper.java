@@ -47,6 +47,8 @@ public interface PostgreSQLRepositoryAdapterMapper {
         customer.getIdentification().setType(typeOfIdentification);
     }
 
+    com.challenge.services.domain.Customer mapperToCustomerDomain(CustomerEntity customerEntity);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "phone", source = "phoneAddress.description")
     @Mapping(target = "gender", source = "gender.code")

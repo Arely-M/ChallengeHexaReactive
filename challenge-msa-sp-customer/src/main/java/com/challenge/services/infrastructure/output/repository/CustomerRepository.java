@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 @Validated
 public interface CustomerRepository {
-    Mono<Void> saveCustomer(CustomerEntity customerEntity);
+    Mono<CustomerEntity> saveCustomer(CustomerEntity customerEntity);
 
     Mono<CustomerEntity> findByCustomerId(String customerId);
 

@@ -29,8 +29,28 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
 
     @Override
     public Mono<Void> createAccount(PostAccountRequest postAccountRequest) {
-        return accountRepository
-                .saveAccount(PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToAccountEntity(postAccountRequest));
+        PostAccountTransactionRequest transactionRequest = createInitialTransactionRequest();
+        AccountEntity accountEntity = mapToAccountEntity(postAccountRequest);
+        return saveAccountAndCreateTransaction(accountEntity, transactionRequest);
+    }
+
+    private AccountEntity mapToAccountEntity(PostAccountRequest postAccountRequest) {
+        return PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToAccountEntity(postAccountRequest);
+    }
+
+    private PostAccountTransactionRequest createInitialTransactionRequest() {
+        PostAccountTransactionRequest request = new PostAccountTransactionRequest();
+        TransactionType type = new TransactionType();
+        request.setValue(BigDecimal.ZERO); // Use BigDecimal.ZERO for clarity
+        type.code(Constants.TYPE_DEPOSIT);
+        type.description("CREATE");
+        request.setType(type);
+        return request;
+    }
+
+    private Mono<Void> saveAccountAndCreateTransaction(AccountEntity accountEntity, PostAccountTransactionRequest transactionRequest) {
+        return accountRepository.saveAccount(accountEntity)
+                .then(createTransaction(accountEntity.getAccountNumber(), transactionRequest));
     }
 
     @Override
@@ -39,7 +59,6 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
             return getAccounts();
         }
         return getByAccountNumber(accountNumber);
-
     }
 
     private Flux<Account> getAccounts() {
@@ -132,41 +151,16 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
         }
     }
 
-    private Mono<Void> updateAccountAndSaveTransaction(AccountEntity accountEntity, PostAccountTransactionRequest postAccountTransactionRequest) {
-        return accountRepository.updateAccount(accountEntity.getId().toString(), accountEntity)
-                .then(transactionRepository.saveTransaction(
-                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToTransactionEntity(postAccountTransactionRequest, accountEntity)
-                ));
+    private Mono<Void> updateAccountAndSaveTransaction(AccountEntity accountEntity, PostAccountTransactionRequest request) {
+        return accountRepository.findByAccountId(accountEntity.getId().toString())
+                .flatMap(account -> saveTransactionAndUpdateAccount(accountEntity, request, account.getInitialBalance()));
     }
 
-    /*public Mono<Void> createTransaction(String accountNumber, PostAccountTransactionRequest postAccountTransactionRequest) {
-        return accountRepository.findByAccountNumber(accountNumber)
-                .flatMap(accountEntity -> {
-                    BigDecimal transactionValue = postAccountTransactionRequest.getValue();
-                    BigDecimal currentBalance = BigDecimal.valueOf(accountEntity.getInitialBalance());
-
-                    if (postAccountTransactionRequest.getType().getCode().equals(Constants.TYPE_DEPOSIT)) {
-                        BigDecimal newBalance = currentBalance.add(transactionValue);
-                        accountEntity.setInitialBalance(newBalance.doubleValue());
-                        return accountRepository.updateAccount(accountEntity.getId().toString(), accountEntity)
-                                .then(transactionRepository
-                                        .saveTransaction(PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToTransactionEntity(postAccountTransactionRequest, accountEntity)));
-                    }
-
-                    if (postAccountTransactionRequest.getType().getCode().equals(Constants.TYPE_WITHDRAWAL)) {
-                        if (currentBalance.compareTo(transactionValue) > 0) {
-                            BigDecimal newBalance = currentBalance.subtract(transactionValue);
-                            accountEntity.setInitialBalance(newBalance.doubleValue());
-                            return accountRepository.updateAccount(accountEntity.getId().toString(), accountEntity)
-                                    .then(transactionRepository
-                                            .saveTransaction(PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToTransactionEntity(postAccountTransactionRequest, accountEntity)));
-                        } else {
-                            return Mono.error(new TransactionException(error_005_Balance_Not_Available));
-                        }
-                    }
-                    return Mono.error(new TransactionException(error_006_Type));
-                });
-    }*/
+    private Mono<Void> saveTransactionAndUpdateAccount(AccountEntity accountEntity, PostAccountTransactionRequest request, double initialBalance) {
+        return transactionRepository
+                .saveTransaction(PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToTransactionEntity(request, accountEntity, initialBalance))
+                .then(accountRepository.updateAccount(accountEntity.getId().toString(), accountEntity));
+    }
 
     @Override
     public Flux<Transaction> getTransactionByFilter() {

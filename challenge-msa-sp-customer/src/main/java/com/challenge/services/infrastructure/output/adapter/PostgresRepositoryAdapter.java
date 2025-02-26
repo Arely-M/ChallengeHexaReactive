@@ -21,8 +21,9 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
     private final CustomerRepository customerRepository;
 
     @Override
-    public Mono<Void> createCustomer(PostCustomerRequest postCustomerRequest) {
+    public Mono<com.challenge.services.domain.Customer> createCustomer(PostCustomerRequest postCustomerRequest) {
         return customerRepository.saveCustomer(PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToCustomerEntity(postCustomerRequest))
+                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToCustomerDomain)
                 .doOnSuccess(response -> log.info("<---| createCustomer finished successfully"))
                 .doOnError(error -> log.error("<---| createCustomer - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
     }
