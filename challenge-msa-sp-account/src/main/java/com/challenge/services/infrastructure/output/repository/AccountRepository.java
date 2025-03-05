@@ -1,6 +1,6 @@
 package com.challenge.services.infrastructure.output.repository;
 
-import com.challenge.services.infrastructure.output.repository.entity.AccountEntity;
+import com.challenge.services.infrastructure.output.repository.entity.Account;
 import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -8,17 +8,17 @@ import reactor.core.publisher.Mono;
 @Validated
 public interface AccountRepository{
 
-    Mono<Void> saveAccount(AccountEntity accountEntity);
+    Mono<Void> saveAccount(Account account);
 
-    Mono<AccountEntity> findByAccountId(String accountId);
+    Mono<Account> findByAccountId(String accountId);
 
     Mono<Void> deleteAccount(String accountId);
 
-    Mono<Void> updateAccount(String accountId, AccountEntity accountEntity);
+    Mono<Void> updateAccount(String accountId, Account account);
 
-    Mono<Void> updatePartialAccount(String accountId, AccountEntity accountEntity);
+    Mono<Void> updatePartialAccount(String accountId, Account account);
 
-    Flux<AccountEntity> findAllAccounts();
+    Flux<Account> findAllAccounts();
 
-    Mono<AccountEntity> findByAccountNumber(String accountNumber);
+    Mono<Account> findByAccountNumber(String accountNumber);
 }

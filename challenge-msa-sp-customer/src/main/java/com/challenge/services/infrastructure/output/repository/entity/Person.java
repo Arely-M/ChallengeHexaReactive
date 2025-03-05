@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @lombok.Getter
 @lombok.Setter
-public class PersonEntity {
+public class Person {
 
     private String name;
     private String gender;

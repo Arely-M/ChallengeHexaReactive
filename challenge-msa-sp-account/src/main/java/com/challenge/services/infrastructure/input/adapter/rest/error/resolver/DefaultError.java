@@ -7,5 +7,8 @@ public class DefaultError {
     public static final ErrorModel error_004_Transaction_Not_Fount = new ErrorModel("004","Transaction not found in database.");
     public static final ErrorModel error_005_Balance_Not_Available= new ErrorModel("005","Balance not available.");
     public static final ErrorModel error_006_Type= new ErrorModel("006","Transaction type not allowed.");
+    public static final ErrorModel error_007_Have_Transactions = new ErrorModel("007","Cannot delete account with existing transactions.");
+
+
 
 }

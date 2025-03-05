@@ -2,7 +2,8 @@ package com.challenge.services.application.service;
 
 import com.challenge.services.application.input.port.AccountService;
 import com.challenge.services.application.output.port.RepositoryPort;
-import com.challenge.services.input.server.models.*;
+import com.challenge.services.domain.dto.Account;
+import com.challenge.services.input.clientSpTransaction.TransactionApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,11 @@ public class AccountServiceImpl implements AccountService {
     private final RepositoryPort repositoryPort;
 
     @Override
-    public Mono<Void> createAccount(Mono<PostAccountRequest> postAccountRequestMono) {
+    public Mono<Void> createAccount(com.challenge.services.domain.dto.Account account) {
         log.info("|--> createAccount start");
-        return postAccountRequestMono
-                .flatMap(repositoryPort::createAccount)
+        return repositoryPort.createAccount(account)
                 .doOnSuccess(response -> log.info("<--| createAccount finished successfully"))
-                .doOnError(error -> log.error("<--| createAccount finished with error", error))
+                .doOnError(error -> log.error("<--| createAccount finished with error {}", error.getMessage()))
                 .then();
     }
 
@@ -30,7 +30,7 @@ public class AccountServiceImpl implements AccountService {
         log.info("|--> getAccountByFilter start");
         return repositoryPort.getAccountByFilter(accountNumber)
                 .doOnNext(response -> log.info("<--| getAccountByFilter finished successfully"))
-                .doOnError(error -> log.error("<--| getAccountByFilter finished with error", error));
+                .doOnError(error -> log.error("<--| getAccountByFilter finished with error {}", error.getMessage()));
     }
 
     @Override
@@ -38,32 +38,30 @@ public class AccountServiceImpl implements AccountService {
         log.info("|--> deleteAccount start");
         return repositoryPort.deleteAccount(accountId)
                 .doOnSuccess(response -> log.info("<--| deleteAccount finished successfully"))
-                .doOnError(error -> log.error("<--| deleteAccount finished with error", error));
+                .doOnError(error -> log.error("<--| deleteAccount finished with error {}", error.getMessage()));
     }
 
     @Override
-    public Mono<Void> putAccount(String accountId, Mono<PutAccountRequest> putAccountRequestMono) {
+    public Mono<Void> putAccount(String accountId, Account account) {
         log.info("|--> putAccount start");
-        return putAccountRequestMono
-                .flatMap(putAccountRequest -> repositoryPort.putAccount(accountId, putAccountRequest))
+        return repositoryPort.putAccount(accountId, account)
                 .doOnSuccess(response -> log.info("<--| putAccount finished successfully"))
-                .doOnError(error -> log.error("<--| putAccount finished with error", error));
+                .doOnError(error -> log.error("<--| putAccount finished with error {}", error.getMessage()));
     }
 
     @Override
-    public Mono<Void> patchAccount(String accountId, Mono<PatchAccountRequest> patchAccountRequestMono) {
+    public Mono<Void> patchAccount(String accountId, Account account) {
         log.info("|--> patchAccount start");
-        return patchAccountRequestMono
-                .flatMap(patchAccountRequest -> repositoryPort.patchAccount(accountId, patchAccountRequest))
+        return repositoryPort.patchAccount(accountId, account)
                 .doOnSuccess(response -> log.info("<--| patchAccount finished successfully"))
-                .doOnError(error -> log.error("<--| patchAccount finished with error", error));
+                .doOnError(error -> log.error("<--| patchAccount finished with error {}", error.getMessage()));
     }
 
     @Override
-    public Mono<GetAccountByIdResponse> getAccountById(String accountId) {
+    public Mono<Account> getAccountById(String accountId) {
         log.info("|--> getAccountById start");
         return repositoryPort.getAccountById(accountId)
                 .doOnNext(response -> log.info("<--| getAccountById finished successfully"))
-                .doOnError(error -> log.error("<--| getAccountById finished with error", error));
+                .doOnError(error -> log.error("<--| getAccountById finished with error {}", error.getMessage()));
     }
 }

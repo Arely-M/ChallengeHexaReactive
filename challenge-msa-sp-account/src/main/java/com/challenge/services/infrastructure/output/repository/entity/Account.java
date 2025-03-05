@@ -1,26 +1,30 @@
 package com.challenge.services.infrastructure.output.repository.entity;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table(name = "customer")
+@Table(name = "account")
 @AllArgsConstructor
 @NoArgsConstructor
 @lombok.Getter
 @lombok.Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CustomerEntity extends PersonEntity {
+public class Account {
 
     @Id
-    @Column("customerid")
+    @Column("accountid")
     private Integer id; // PK
-    private String password;
+    @Column("accountnumber")
+    private String accountNumber;
+    @Column("accounttype")
+    private String accountType;
+    @Column("initialbalance")
+    private double initialBalance;
     private String status;
-
+    @Column("customerid")
+    private int customerId;
 
 }

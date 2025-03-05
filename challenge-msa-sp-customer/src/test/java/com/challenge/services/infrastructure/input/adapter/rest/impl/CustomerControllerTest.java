@@ -1,13 +1,13 @@
 package com.challenge.services.infrastructure.input.adapter.rest.impl;
 
 import com.challenge.services.application.service.CustomerServiceImpl;
+import com.challenge.services.domain.dto.Customer;
 import com.challenge.services.input.server.models.PostCustomerRequest;
 import com.challenge.services.util.MockObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,7 @@ class CustomerControllerTest {
 
                         .build())
                 .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(MockObject.buildPostCustomerRequest()), PostCustomerRequest.class)
+                .body(Mono.just(MockObject.postCustomerDto()), Customer.class)
                 .exchange()
                 .expectStatus()
                 .isEqualTo(HttpStatus.CREATED);
@@ -46,7 +46,7 @@ class CustomerControllerTest {
 
     @Test
     void getServiceByFilterSuccess() {
-        when(customerService.getCustomerByFilter(anyString())).thenReturn(Flux.just(MockObject.buildGetCustomer()));
+        when(customerService.getCustomerByFilter(anyString())).thenReturn(Flux.just(MockObject.getCustomer()));
 
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/support/customers")

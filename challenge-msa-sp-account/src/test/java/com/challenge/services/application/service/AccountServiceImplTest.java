@@ -1,7 +1,7 @@
 package com.challenge.services.application.service;
 
 import com.challenge.services.application.output.port.RepositoryPort;
-import com.challenge.services.input.server.models.Account;
+import com.challenge.services.domain.dto.Account;
 import com.challenge.services.input.server.models.PostAccountRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,30 +29,24 @@ class AccountServiceImplTest {
 
     @Test
     void shouldSaveAccounWhenValidInput() {
-        // Configuración de la simulación
-        PostAccountRequest request = new PostAccountRequest();
-        when(repositoryPort.createAccount(any(PostAccountRequest.class))).thenReturn(Mono.empty());
+        Account request = new Account();
+        when(repositoryPort.createAccount(any(Account.class))).thenReturn(Mono.empty());
 
-        // Ejecución
-        Mono<Void> result = accountService.createAccount(Mono.just(request));
+        Mono<Void> result = accountService.createAccount(request);
 
-        // Validación
         StepVerifier.create(result)
                 .verifyComplete();
 
-        verify(repositoryPort, times(1)).createAccount(any(PostAccountRequest.class));
+        verify(repositoryPort, times(1)).createAccount(any(Account.class));
     }
 
     @Test
     void shouldReturnAccountWhenValidInput() {
-        // Configuración de la simulación
         Account request = new Account();
         when(repositoryPort.getAccountByFilter(anyString())).thenReturn(Flux.just(request));
 
-        // Ejecución
         Mono<Void> result = accountService.getAccountByFilter(anyString()).then();
 
-        // Validación
         StepVerifier.create(result)
                 .verifyComplete();
 

@@ -1,12 +1,9 @@
 package com.challenge.services.infrastructure.output.adapter;
 
 import com.challenge.services.application.output.port.RepositoryPort;
+import com.challenge.services.domain.dto.Customer;
 import com.challenge.services.infrastructure.output.adapter.mapper.PostgreSQLRepositoryAdapterMapper;
 import com.challenge.services.infrastructure.output.repository.CustomerRepository;
-import com.challenge.services.input.server.models.Customer;
-import com.challenge.services.input.server.models.PatchCustomerRequest;
-import com.challenge.services.input.server.models.PostCustomerRequest;
-import com.challenge.services.input.server.models.PutCustomerRequest;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +14,14 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+
 public class PostgresRepositoryAdapter implements RepositoryPort {
     private final CustomerRepository customerRepository;
 
     @Override
-    public Mono<com.challenge.services.domain.Customer> createCustomer(PostCustomerRequest postCustomerRequest) {
-        return customerRepository.saveCustomer(PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToCustomerEntity(postCustomerRequest))
-                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToCustomerDomain)
+    public Mono<com.challenge.services.domain.dto.Customer> createCustomer(com.challenge.services.domain.dto.Customer customer) {
+        return customerRepository.saveCustomer(PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperCustomerDtoToCustomerEntity(customer))
+                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToCustomerDto)
                 .doOnSuccess(response -> log.info("<---| createCustomer finished successfully"))
                 .doOnError(error -> log.error("<---| createCustomer - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
     }
@@ -42,7 +40,7 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
                     log.info("customers: {}", new Gson().toJson(customerEntity));
                     return customerEntity;
                 })
-                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToCustomer);
+                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperCustomerEntityToCustomerDto);
     }
 
     private Flux<Customer> getCustomerById(String customerId) {
@@ -51,7 +49,7 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
                     log.info("customer: {}", new Gson().toJson(customerEntity));
                     return customerEntity;
                 })
-                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToCustomer)
+                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperCustomerEntityToCustomerDto)
                 .flux();
     }
 
@@ -61,20 +59,20 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
     }
 
     @Override
-    public Mono<Void> putCustomer(String customerId, PutCustomerRequest putCustomerRequest) {
+    public Mono<Void> putCustomer(String customerId, Customer customer) {
         return customerRepository.updateCustomer(
                         customerId,
-                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPutCustomerToCustomerEntity(putCustomerRequest))
+                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPutCustomerToCustomerEntity(customer))
                 .doOnSuccess(response -> log.info("<---| putCustomer finished successfully"))
                 .doOnError(error -> log.error("<---| putCustomer - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
     }
 
     @Override
-    public Mono<Void> patchCustomer(String customerId, PatchCustomerRequest patchCustomerRequest) {
+    public Mono<Void> patchCustomer(String customerId, Customer customer) {
         return customerRepository
                 .updatePartialCustomer(
                         customerId,
-                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPatchCustomerToCustomerEntity(patchCustomerRequest))
+                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPatchCustomerToCustomerEntity(customer))
                 .doOnSuccess(response -> log.info("<---| patchCustomer finished successfully"))
                 .doOnError(error -> log.error("<---| patchCustomer - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
     }

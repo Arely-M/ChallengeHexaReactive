@@ -1,0 +1,566 @@
+openapi: 3.0.0
+info:
+  title: MSA Support - Transaction
+  description: |
+    <sup>(ES)</sup> Microservicio de soporte que permite la consulta, creación, actualización, edición y eliminacion de movimientos. <br><br>
+  version: 1.0.0
+  contact:
+    name: Arely Martinez
+servers:
+  - url: http://localhost:8080
+    description: Development
+tags:
+  - name: Transaction
+    description: Transaction Controller
+
+paths:
+  /support/transactions:
+    get:
+      tags:
+        - Transaction
+      summary: "⁽ᴱˢ⁾ Devuelve una lista de movimientos de una cuenta. \n⁽ᴱᴺ⁾ Returns a list of transactions in an account.\n"
+      operationId: GetTransactionByFilter
+      description: |
+        ### Details:
+        <sup>(ES)</sup> Permite realizar la consulta de movimientos de una cuenta.⠀<br>
+        <sup>(EN)</sup> Allows you to check account movements. <br><br>
+        
+        | Expected Result  | Path Parameter | Query Parameter                 |
+        | ---------------- | ------------   | -----------------------------------|
+        | Retrieves a list of transactions from an account| - | accountId   |
+      parameters:
+        - name: accountId
+          required: true
+          in: query
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+          description: account identification
+      responses:
+        "200":
+          description: |
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Busqueda exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Successful search.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTransactionByFilterResponse'
+              examples:
+                GetTransactionByFilterResponseExample:
+                  $ref: '#/components/examples/GetTransactionByFilterResponseExample'
+    post:
+      tags:
+        -  Transaction
+      summary: "⁽ᴱˢ⁾ Guarda un movimiento de una cuenta. \n⁽ᴱᴺ⁾ Saves a transaction in an account. \n"
+      operationId: PostTransaction
+      description: |-
+        <sup>(ES)</sup> Permite realizar el guardado de movimientos.⠀<br>
+        <sup>(EN)</sup> Allows you to save movements. <br><br>
+      parameters:
+        - name: accountNumber
+          required: true
+          in: query
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+          description: account number
+      requestBody:
+        description: |-
+          <sup><i>(ES)</i></sup> Movimiento a crear para una cuenta.
+          <br><br>
+          <sup><i>(EN)</i></sup> Movement to create for an account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostTransactionRequest'
+            examples:
+              PostTransactionRequestExample:
+                $ref: '#/components/examples/PostTransactionRequestExample'
+      responses:
+        "201":
+          description: |-
+            <b>`Created`</b><br><br>
+            <sup><i>(ES)</i></sup> Inserción exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Insertion successful.
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/PostTransactionResponse"
+              examples:
+                PostTransactionResponseExample:
+                  $ref: '#/components/examples/PostTransactionResponseExample'
+
+  /support/transactions/{transactionId}:
+    put:
+      tags:
+        - Transaction
+      summary: "⁽ᴱˢ⁾ Actualizar el movimiento de una cuenta. ⁽ᴱᴺ⁾ UUpdate an account movement."
+      description: |-
+        <sup>(ES)</sup> Permite realizar el actualizado del movimiento.⠀<br>
+        <sup>(EN)</sup> Allows you to update movement. <br><br>
+      operationId: PutTransaction
+      parameters:
+        - name: transactionId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 30
+            pattern: "^[0-9]+$"
+          description: transaction identification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PutTransactionRequest'
+            examples:
+              PutTransactionRequestExample:
+                $ref: '#/components/examples/PutTransactionRequestExample'
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Actualizacion exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Update successful.
+    patch:
+      tags:
+        - Transaction
+      summary: "⁽ᴱˢ⁾ Edita seccion de un movimiento. \n⁽ᴱᴺ⁾ Edit section of a movement.\n"
+      operationId: PatchTransaction
+      parameters:
+        - name: transactionId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            pattern: "^[0-9]+$"
+            example: "1"
+          description: transaction identification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchTransactionRequest'
+            examples:
+              PatchTransactionRequestExample:
+                $ref: '#/components/examples/PatchTransactionRequestExample'
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Actualizacion exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Update successful.
+    delete:
+      tags:
+        - Transaction
+      summary: "⁽ᴱˢ⁾ Elimina el movimiento. ⁽ᴱᴺ⁾ Delete the movement."
+      description: |-
+        <sup>(ES)</sup> Permite realizar el eliminado del movimiento.⠀<br>
+        <sup>(EN)</sup> Allows you to delete movement. <br><br>
+      operationId: DeleteTransaction
+      parameters:
+        - name: transactionId
+          required: true
+          in: path
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 30
+            pattern: "^[0-9]+$"
+          description: transaction identification
+      responses:
+        "200":
+          description: |-
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Eliminación exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Deletion successful.            
+
+  /support/transactions/report:
+    get:
+      tags:
+        - Transaction
+      summary: "⁽ᴱˢ⁾ Devuelve un report de movmientos comprendidos entre un rango de fechas. \n⁽ᴱᴺ⁾ Returns a report of movements within a range of dates.\n"
+      operationId: GetTransactionReport
+      description: |
+        ### Details:
+        <sup>(ES)</sup> Permite realizar la consulta de movimientos.⠀<br>
+        <sup>(EN)</sup> Allows consult movements. <br><br>
+        
+        | Expected Result  | Path Parameter | Query Parameter                 |
+        | ---------------- | ------------   | -----------------------------------|
+        | Retrieves a list of movements| - | -   |
+      parameters:
+        - name: accountNumber
+          required: true
+          in: query
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 10
+            pattern: "^[0-9]+$"
+          description: account number
+        - name: startDate
+          required: true
+          in: query
+          schema:
+            type: string
+          description: Start date of movements
+        - name: endDate
+          required: true
+          in: query
+          schema:
+            type: string
+          description: End date of movements
+      responses:
+        "200":
+          description: |
+            <b>`OK`</b><br><br>
+            <sup><i>(ES)</i></sup> Busqueda exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Successful search.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTransactionReportResponse'
+              examples:
+                GetTransactionReportResponseExample:
+                  $ref: '#/components/examples/GetTransactionReportResponseExample'
+
+components:
+  schemas:
+    Status:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Estado de la cuenta.
+        <br><br>
+        <sup><i>(EN)</i></sup>Account status.
+      properties:
+        code:
+          type: string
+          description: status code
+
+    GetTransactionByFilterResponse:
+      type: array
+      description: |
+        <sup><i>(ES)</i></sup>Respuesta con el listado de movimientos de una cuenta.
+        <br><br>
+        <sup><i>(EN)</i></sup>Response with a list of account transactions.
+      items:
+        $ref : "#/components/schemas/Transaction"
+    PostTransactionRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del movimiento a guardar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Movement information to be saved.
+      allOf:
+        - $ref:  "#/components/schemas/PostAccountTransaction"
+    PostAccountTransaction:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de un movimiento.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about an movement.
+      properties:
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        value:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Monto del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Amount of movement.
+    PostTransactionResponse:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del movimiento a guardar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Movement information to be saved.
+      allOf:
+        - $ref:  "#/components/schemas/Transaction"
+    Transaction:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de una transacción.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing transaction information.
+      properties:
+        transactionId:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Identificación del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Movement identification.
+          minLength: 1
+          maxLength: 30
+          pattern: "^[0-9]+$"
+        date:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Fecha del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Date of movement.
+          format: date
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        value:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Valor del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Value of movement.
+        balance:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Saldo del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Balance of the movement.
+        accountId:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Identificación de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account identification.
+          minLength: 1
+          maxLength: 30
+          pattern: "^[0-9]+$"
+    TransactionType:
+      type: object
+      properties:
+        code:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Código de tipo de movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Movement type code.
+        description:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Descripción del tipo de movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Movement Type description.
+          minLength: 1
+          maxLength: 45
+          pattern: "^[a-zA-Z\\s]+$"
+    PutTransactionRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del movimiento a actualizar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Movement information to be update.
+      allOf:
+        - $ref:  "#/components/schemas/PutTransaction"
+    PutTransaction:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de un movimiento.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about a movement.
+      properties:
+        date:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Fecha del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Date of movement.
+          format: date
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        value:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Valor del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Value of movement.
+        balance:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Saldo del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Balance of the movement.
+        accountId:
+          type: number
+          description: |
+            <sup><i>(ES)</i></sup>Identificación de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account identification.
+          minLength: 1
+          maxLength: 30
+          pattern: "^[0-9]+$"
+    PatchTransactionRequest:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Información del movimiento a actualizar.
+        <br><br>
+        <sup><i>(EN)</i></sup>Movement information to be update.
+      allOf:
+        - $ref:  "#/components/schemas/PatchTransaction"
+    PatchTransaction:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de un movimiento.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about a movement.
+      properties:
+        type:
+          $ref: "#/components/schemas/TransactionType"
+        value:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Valor del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Value of movement.
+
+    GetTransactionReportResponse:
+      type: array
+      description: |
+        <sup><i>(ES)</i></sup>Respuesta con el listado de movimientos.
+        <br><br>
+        <sup><i>(EN)</i></sup>Responce with the list of movements.
+      items:
+        $ref : "#/components/schemas/TransactionReport"
+    TransactionReport:
+      type: object
+      description: |
+        <sup><i>(ES)</i></sup>Objeto con la información de un movimiento.
+        <br><br>
+        <sup><i>(EN)</i></sup>Object containing information about an movement.
+      properties:
+        date:
+          type: string
+          format: date
+          description: |
+            <sup><i>(ES)</i></sup>Fecha del report.
+            <br><br>
+            <sup><i>(EN)</i></sup>Report date.
+          minLength: 1
+        customerName:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Nombre del cliente.
+            <br><br>
+            <sup><i>(EN)</i></sup>Customer name.
+          minLength: 1
+          maxLength: 40
+        accountNumber:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Numero de cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Account number.
+          minLength: 1
+          maxLength: 30
+        accountType:
+          type: string
+          description: |
+            <sup><i>(ES)</i></sup>Tipo de cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Type account.
+          minLength: 1
+        initialBalance:
+          type: number
+          description: |
+            <sup><i>(ES)</i></sup>Saldo inicial de la cuenta.
+            <br><br>
+            <sup><i>(EN)</i></sup>Initial account balance.
+        status:
+          $ref: '#/components/schemas/Status'
+        value:
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Monto del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Amount of movement.
+          minLength: 1
+        availableBalance:
+          title: value
+          type: number
+          format: int64
+          description: |
+            <sup><i>(ES)</i></sup>Monto disponible del movimiento.
+            <br><br>
+            <sup><i>(EN)</i></sup>Available amount of the movement.
+          minLength: 1
+
+
+  examples:
+    GetTransactionByFilterResponseExample:
+      value:
+        - transactionId: '2112808019083068021244'
+          date: '2025-02-22'
+          type:
+            code: "D"
+            description: 'Deposito'
+          value: 10
+          balance: 210
+          accountId: '146413194162194211733656319471'
+        - transactionId: '2112808019083068021244'
+          date: '2025-02-22'
+          type:
+            code: "R"
+            description: 'Retiro'
+          value: 20
+          balance: 190
+          accountId: '146413194162194211733656319471'
+    PostTransactionRequestExample:
+      value:
+        type:
+          code: R
+          description: RETIRO
+        value: 20
+    PostTransactionResponseExample:
+      value:
+        transactionId: '375002887710982711985369354800'
+        date: '2025-02-22'
+        type:
+          code: R
+          description: qnHDwnHvxxtxyBMeUxioSv
+        value: 20
+        balance: 180
+        accountId: '385503749884996027576274695243'
+
+    PutTransactionRequestExample:
+      value:
+        date: '2025-02-22'
+        type:
+          code: D
+          description: DEPOSITO
+        value: 10
+        balance: 200
+        accountId: 1
+    PatchTransactionRequestExample:
+      value:
+        type:
+          code: R
+          description: Retiro
+        value: 40
+    GetTransactionReportResponseExample:
+      value:
+        - date: '2025-02-24'
+          customerName: Arely Martinez
+          accountNumber: '23456789097'
+          accountType: "AHORRO"
+          initialBalance: 200
+          status:
+            code: Enable
+          value: 20
+          availableBalance: 220

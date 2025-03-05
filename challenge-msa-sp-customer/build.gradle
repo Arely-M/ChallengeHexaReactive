@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.9'
 	id 'io.spring.dependency-management' version '1.1.7'
-	id 'org.openapi.generator' version '6.0.0'
+	id 'org.openapi.generator' version '6.5.0'
 }
 
 def packageName = 'com.challenge.services'
@@ -37,6 +37,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+	//dependency Base
+	implementation "org.springframework.boot:spring-boot-starter-actuator"
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.1.3'
+
 	// DB
 	implementation 'org.postgresql:r2dbc-postgresql:1.0.2.RELEASE'
 	implementation 'io.r2dbc:r2dbc-spi'
@@ -45,10 +49,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'redis.clients:jedis:5.1.2'
 
-	implementation 'javax.annotation:javax.annotation-api:1.3.2'
-	implementation 'javax.validation:validation-api:2.0.1.Final'
-	implementation 'io.swagger.core.v3:swagger-annotations:2.1.13'
-
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.10'
 	implementation 'com.google.code.gson:gson:2.11.0'
 
 	// Unit Test
@@ -57,8 +58,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-openApiGenerate {
-	generatorName = "spring"
+task generateServer(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName = 'spring'
 	inputSpec = "$rootDir/src/main/resources/openapi.yaml"
 	outputDir = "$buildDir/generated".toString()
 	apiPackage = "${packageName}.input.server"
@@ -82,7 +83,7 @@ openApiGenerate {
 	]
 }
 
-compileJava.dependsOn tasks.openApiGenerate
+compileJava.dependsOn generateServer
 
 sourceSets.main.java.srcDirs = ["$buildDir/generated/src/main/java", "src/main/java"]
 

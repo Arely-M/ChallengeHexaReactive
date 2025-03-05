@@ -1,13 +1,12 @@
 package com.challenge.services.infrastructure.output.adapter;
 
 import com.challenge.services.application.output.port.RepositoryPort;
-import com.challenge.services.infrastructure.exception.TransactionException;
+import com.challenge.services.domain.dto.Account;
 import com.challenge.services.infrastructure.output.adapter.mapper.PostgreSQLRepositoryAdapterMapper;
 import com.challenge.services.infrastructure.output.repository.AccountRepository;
-import com.challenge.services.infrastructure.output.repository.TransactionRepository;
-import com.challenge.services.infrastructure.output.repository.entity.AccountEntity;
-import com.challenge.services.infrastructure.output.util.Constants;
-import com.challenge.services.input.server.models.*;
+import com.challenge.services.input.server.models.GetAccountByIdResponse;
+import com.challenge.services.input.server.models.PatchAccountRequest;
+import com.challenge.services.input.server.models.PutAccountRequest;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,42 +14,42 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
-
-import static com.challenge.services.infrastructure.input.adapter.rest.error.resolver.DefaultError.error_005_Balance_Not_Available;
-import static com.challenge.services.infrastructure.input.adapter.rest.error.resolver.DefaultError.error_006_Type;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class PostgresRepositoryAdapter implements RepositoryPort {
     private final AccountRepository accountRepository;
-    private final TransactionRepository transactionRepository;
+
+//    @Override
+//    public Mono<Void> createAccount(PostAccountRequest postAccountRequest) {
+//        PostAccountTransactionRequest transactionRequest = createInitialTransactionRequest();
+//        AccountEntity accountEntity = mapToAccountEntity(postAccountRequest);
+//        return saveAccountAndCreateTransaction(accountEntity, transactionRequest);
+//    }
+//
+//    private AccountEntity mapToAccountEntity(PostAccountRequest postAccountRequest) {
+//        return PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToAccountEntity(postAccountRequest);
+//    }
+//
+//    private PostAccountTransactionRequest createInitialTransactionRequest() {
+//        PostAccountTransactionRequest request = new PostAccountTransactionRequest();
+//        TransactionType type = new TransactionType();
+//        request.setValue(BigDecimal.ZERO); // Use BigDecimal.ZERO for clarity
+//        type.code(Constants.TYPE_DEPOSIT);
+//        type.description("CREATE");
+//        request.setType(type);
+//        return request;
+//    }
+//
+//    private Mono<Void> saveAccountAndCreateTransaction(AccountEntity accountEntity, PostAccountTransactionRequest transactionRequest) {
+//        return accountRepository.saveAccount(accountEntity)
+//                .then(createTransaction(accountEntity.getAccountNumber(), transactionRequest));
+//    }
 
     @Override
-    public Mono<Void> createAccount(PostAccountRequest postAccountRequest) {
-        PostAccountTransactionRequest transactionRequest = createInitialTransactionRequest();
-        AccountEntity accountEntity = mapToAccountEntity(postAccountRequest);
-        return saveAccountAndCreateTransaction(accountEntity, transactionRequest);
-    }
-
-    private AccountEntity mapToAccountEntity(PostAccountRequest postAccountRequest) {
-        return PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToAccountEntity(postAccountRequest);
-    }
-
-    private PostAccountTransactionRequest createInitialTransactionRequest() {
-        PostAccountTransactionRequest request = new PostAccountTransactionRequest();
-        TransactionType type = new TransactionType();
-        request.setValue(BigDecimal.ZERO); // Use BigDecimal.ZERO for clarity
-        type.code(Constants.TYPE_DEPOSIT);
-        type.description("CREATE");
-        request.setType(type);
-        return request;
-    }
-
-    private Mono<Void> saveAccountAndCreateTransaction(AccountEntity accountEntity, PostAccountTransactionRequest transactionRequest) {
-        return accountRepository.saveAccount(accountEntity)
-                .then(createTransaction(accountEntity.getAccountNumber(), transactionRequest));
+    public Mono<Void> createAccount(Account account) {
+        return accountRepository
+                .saveAccount(PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperAccountToAccountEntity(account));
     }
 
     @Override
@@ -67,27 +66,27 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
                     log.info("accounts: {}", new Gson().toJson(accountEntity));
                     return accountEntity;
                 })
-                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToAccount);
+                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperAccountEntityToAccountDto);
     }
 
     private Flux<Account> getByAccountNumber(String accountNumber) {
         return accountRepository.findByAccountNumber(accountNumber)
-                .map(customerEntity -> {
-                    log.info("customer: {}", new Gson().toJson(customerEntity));
-                    return customerEntity;
+                .map(accountEntity -> {
+                    log.info("account by number: {}", new Gson().toJson(accountEntity));
+                    return accountEntity;
                 })
-                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToAccount)
+                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperAccountEntityToAccountDto)
                 .flux();
     }
 
     @Override
-    public Mono<GetAccountByIdResponse> getAccountById(String accountId) {
+    public Mono<Account> getAccountById(String accountId) {
         return accountRepository.findByAccountId(accountId)
                 .map(accountEntity -> {
                     log.info("account: {}", new Gson().toJson(accountEntity));
                     return accountEntity;
                 })
-                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToGetAccountById);
+                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToAccountDtoById);
     }
 
     @Override
@@ -96,105 +95,17 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
     }
 
     @Override
-    public Mono<Void> putAccount(String accountId, PutAccountRequest putAccountRequest) {
+    public Mono<Void> putAccount(String accountId, Account account) {
         return accountRepository.updateAccount(
                         accountId,
-                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPutAccountToAccountEntity(putAccountRequest))
-                .doOnSuccess(response -> log.info("<---| putAccount finished successfully"))
-                .doOnError(error -> log.error("<---| putAccount - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
+                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPutAccountToAccountEntity(account));
     }
 
     @Override
-    public Mono<Void> patchAccount(String accountId, PatchAccountRequest patchAccountRequest) {
+    public Mono<Void> patchAccount(String accountId, Account account) {
         return accountRepository
                 .updatePartialAccount(
                         accountId,
-                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPatchAccountToAccountEntity(patchAccountRequest))
-                .doOnSuccess(response -> log.info("<---| patchAccount finished successfully"))
-                .doOnError(error -> log.error("<---| patchAccount - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
-    }
-
-    @Override
-    public Mono<Void> createTransaction(String accountNumber, PostAccountTransactionRequest postAccountTransactionRequest) {
-        return accountRepository.findByAccountNumber(accountNumber)
-                .flatMap(accountEntity -> processTransaction(accountEntity, postAccountTransactionRequest));
-    }
-
-    private Mono<Void> processTransaction(AccountEntity accountEntity, PostAccountTransactionRequest request) {
-        BigDecimal transactionValue = BigDecimal.valueOf(Math.abs(request.getValue().doubleValue()));
-        BigDecimal currentBalance = BigDecimal.valueOf(accountEntity.getInitialBalance());
-        request.setValue(BigDecimal.valueOf(transactionValue.doubleValue()));
-
-        switch (request.getType().getCode()) {
-            case Constants.TYPE_DEPOSIT:
-                return handleDeposit(accountEntity, transactionValue, request);
-            case Constants.TYPE_WITHDRAWAL:
-                return handleWithdrawal(accountEntity, transactionValue, currentBalance, request);
-            default:
-                return Mono.error(new TransactionException(error_006_Type));
-        }
-    }
-
-    private Mono<Void> handleDeposit(AccountEntity accountEntity, BigDecimal transactionValue, PostAccountTransactionRequest request) {
-        BigDecimal newBalance = BigDecimal.valueOf(accountEntity.getInitialBalance()).add(transactionValue);
-        accountEntity.setInitialBalance(newBalance.doubleValue());
-        return updateAccountAndSaveTransaction(accountEntity, request);
-    }
-
-    private Mono<Void> handleWithdrawal(AccountEntity accountEntity, BigDecimal transactionValue, BigDecimal currentBalance, PostAccountTransactionRequest request) {
-        if (currentBalance.compareTo(transactionValue) > 0) {
-            BigDecimal newBalance = currentBalance.subtract(transactionValue);
-            accountEntity.setInitialBalance(newBalance.doubleValue());
-            return updateAccountAndSaveTransaction(accountEntity, request);
-        } else {
-            return Mono.error(new TransactionException(error_005_Balance_Not_Available));
-        }
-    }
-
-    private Mono<Void> updateAccountAndSaveTransaction(AccountEntity accountEntity, PostAccountTransactionRequest request) {
-        return accountRepository.findByAccountId(accountEntity.getId().toString())
-                .flatMap(account -> saveTransactionAndUpdateAccount(accountEntity, request, account.getInitialBalance()));
-    }
-
-    private Mono<Void> saveTransactionAndUpdateAccount(AccountEntity accountEntity, PostAccountTransactionRequest request, double initialBalance) {
-        return transactionRepository
-                .saveTransaction(PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperToTransactionEntity(request, accountEntity, initialBalance))
-                .then(accountRepository.updateAccount(accountEntity.getId().toString(), accountEntity));
-    }
-
-    @Override
-    public Flux<Transaction> getTransactionByFilter() {
-        return transactionRepository.findAll()
-                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToTransaction);
-    }
-
-    @Override
-    public Mono<Void> deleteTransaction(String transactionId) {
-        return transactionRepository.deleteTransaction(transactionId);
-    }
-
-    @Override
-    public Mono<Void> putTransaction(String transactionId, PutAccountTransactionRequest putAccountTransactionRequest) {
-        return transactionRepository.updateTransaction(
-                        transactionId,
-                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPutAccountTransactionRequestToTransactionEntity(putAccountTransactionRequest))
-                .doOnSuccess(response -> log.info("<---| putTransaction finished successfully"))
-                .doOnError(error -> log.error("<---| putTransaction - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
-    }
-
-    @Override
-    public Mono<Void> patchAccountTransaction(String transactionId, PatchAccountTransactionRequest patchAccountTransactionRequest) {
-        return transactionRepository
-                .patchTransaction(
-                        transactionId,
-                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPatchAccountTransactionToTransactionEntity(patchAccountTransactionRequest))
-                .doOnSuccess(response -> log.info("<---| patchCustomer finished successfully"))
-                .doOnError(error -> log.error("<---| patchCustomer - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
-    }
-
-    @Override
-    public Flux<TransactionReport> getAccountTransactionReport(String accountNumber, String startDate, String endDate) {
-        return transactionRepository.getTransactionReport(accountNumber, startDate, endDate)
-                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperToTransactionReport);
+                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPatchAccountToAccountEntity(account));
     }
 }
