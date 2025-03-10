@@ -37,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
         return repositoryPort.createCustomer(customer)
                 .flatMap(this::sendEvent)
                 .doOnSuccess(response -> log.info("<--| createCustomer finished successfully"))
-                .doOnError(error -> log.error("<--| createCustomer finished with error", error));
+                .doOnError(error -> log.error("<--| createCustomer finished with error {}", error.getMessage()));
     }
 
     private Mono<Void> sendEvent(com.challenge.services.domain.dto.Customer customerDto) {

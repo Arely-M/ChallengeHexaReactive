@@ -3,8 +3,6 @@ package com.challenge.services.util;
 public class Constants {
     private Constants(){
     }
-    public static final String GENDER_F = "F";
-    public static final String GENDER_M = "M";
 
     public static final String TYPE_PASSPORT = "CCPT";
     public static final String TYPE_RUC = "TXID";

@@ -2,7 +2,6 @@ package com.challenge.services.application.service;
 
 import com.challenge.services.application.output.port.RepositoryPort;
 import com.challenge.services.domain.dto.Account;
-import com.challenge.services.input.server.models.PostAccountRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,7 +11,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 class AccountServiceImplTest {
@@ -28,7 +26,7 @@ class AccountServiceImplTest {
     }
 
     @Test
-    void shouldSaveAccounWhenValidInput() {
+    void shouldSaveAccountWhenValidInput() {
         Account request = new Account();
         when(repositoryPort.createAccount(any(Account.class))).thenReturn(Mono.empty());
 

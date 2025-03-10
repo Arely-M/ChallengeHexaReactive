@@ -19,6 +19,9 @@ class CustomerServiceImplTest {
     @Mock
     private RepositoryPort repositoryPort;
 
+    @Mock
+    private JwtServiceImpl jwtService;
+
     @InjectMocks
     private CustomerServiceImpl customerService;
 
@@ -47,6 +50,7 @@ class CustomerServiceImplTest {
     void shouldReturnCustomerWhenValidInput() {
         Customer request = new Customer();
         when(repositoryPort.getCustomerByFilter(anyString())).thenReturn(Flux.just(request));
+        when(jwtService.validateToken(anyString(), anyString())).thenReturn(Mono.just(true));
 
         Mono<Void> result = customerService.getCustomerByFilter(TOKEN, CUSTOMER_ID).then();
 
