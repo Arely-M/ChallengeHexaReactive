@@ -2,8 +2,6 @@ package com.challenge.services.application.service;
 
 import com.challenge.services.application.output.port.RepositoryPort;
 import com.challenge.services.domain.dto.Customer;
-import com.challenge.services.input.server.models.PatchCustomerRequest;
-import com.challenge.services.input.server.models.PutCustomerRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,6 +23,7 @@ class CustomerServiceImplTest {
     private CustomerServiceImpl customerService;
 
     public static final String CUSTOMER_ID = "customerId";
+    public static final String TOKEN ="Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMTIzIiwiaWF0IjoxNzQxMzI5NjM4LCJleHAiOjE3NDEzMzAyMzh9.t5WnYEio32ihEScjrEI0E8JvBg0eQ9bPyQDEa1Q7dKU";
 
     @BeforeEach
     public void setUp() {
@@ -49,7 +48,7 @@ class CustomerServiceImplTest {
         Customer request = new Customer();
         when(repositoryPort.getCustomerByFilter(anyString())).thenReturn(Flux.just(request));
 
-        Mono<Void> result = customerService.getCustomerByFilter(CUSTOMER_ID).then();
+        Mono<Void> result = customerService.getCustomerByFilter(TOKEN, CUSTOMER_ID).then();
 
         StepVerifier.create(result)
                 .verifyComplete();

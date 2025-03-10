@@ -1,28 +1,10 @@
 package com.challenge.services.util;
 
-import com.challenge.services.input.server.models.*;
 import java.math.BigDecimal;
 
 public class MockObject {
 
     private MockObject(){}
-
-    public static PostCustomerRequest buildPostCustomerRequest() {
-        return new PostCustomerRequest()
-                .customerId("1")
-                .age(BigDecimal.valueOf(30))
-                .address(new Address())
-                .name("Arely")
-                .gender(new Gender().code(Gender.CodeEnum.F))
-                .identification(new Identification()
-                        .identifier(new Identifier()
-                                .value("1235361007")))
-                .password("12345")
-                .status(new Status()
-                        .code("Enable"))
-                .phoneAddress(new PhoneAddress()
-                        .description("09012343"));
-    }
 
     public static com.challenge.services.domain.dto.Customer postCustomerDto(){
         return getCustomer();
@@ -40,7 +22,7 @@ public class MockObject {
         customer.setName("Arely");
 
         com.challenge.services.domain.dto.Gender gender = new com.challenge.services.domain.dto.Gender();
-        gender.setValue("F");
+        gender.setCode("F");
         customer.setGender(gender);
 
         com.challenge.services.domain.dto.Identifier identifier = new com.challenge.services.domain.dto.Identifier();

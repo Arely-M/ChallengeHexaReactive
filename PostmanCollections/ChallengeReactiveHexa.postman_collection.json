@@ -24,7 +24,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Arely Martinez \",\n  \"gender\": {\n    \"code\": \"F\"\n  },\n  \"age\": 26,\n  \"identification\": {\n    \"type\": {\n      \"code\": \"IDCD\",\n      \"name\": \"Cédula\"\n    },\n    \"identifier\": {\n      \"value\": \"1205361001\"\n    }\n  },\n  \"address\": {\n    \"value\": \"Urdeza Este\"\n  },\n  \"phoneAddress\": {\n    \"description\": \"321143324\"\n  },\n  \"password\": \"string\",\n  \"status\": {\n    \"code\": \"Enable\"\n  }\n}"
+							"raw": "{\n  \"name\": \"Vex\",\n  \"gender\": {\n    \"code\": \"M\"\n  },\n  \"age\": 20,\n  \"identification\": {\n    \"type\": {\n      \"code\": \"IDCD\",\n      \"name\": \"Cedula\"\n    },\n    \"identifier\": {\n      \"value\": \"1205361222\"\n    }\n  },\n  \"address\": {\n    \"value\": \"Ursesa\"\n  },\n  \"phoneAddress\": {\n    \"description\": \"0907981308\"\n  },\n  \"password\": \"R&TYUR$U\",\n  \"status\": {\n    \"code\": \"Enable\"\n  }\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8090/support/customers",
@@ -44,6 +44,16 @@
 				{
 					"name": "GetCustomerByFilter",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzQxMzc0MzYyLCJleHAiOjE3NDEzNzQ5NjJ9.ka-_sadCRCv_xiMXgkp1Um4uPP9l0IL1WDdhb24snqM",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [
 							{
@@ -52,12 +62,12 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/support/customers",
+							"raw": "http://localhost:8090/support/customers?customerId=2",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8090",
 							"path": [
 								"support",
 								"customers"
@@ -65,8 +75,7 @@
 							"query": [
 								{
 									"key": "customerId",
-									"value": "2",
-									"disabled": true
+									"value": "2"
 								}
 							]
 						}
@@ -89,15 +98,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Arely Denise Martinez\",\n  \"gender\": {\n    \"code\": \"F\"\n  },\n  \"age\": 27,\n  \"identification\": {\n    \"type\": {\n      \"code\": \"IDCD\",\n      \"name\": \"Cédula\"\n    },\n    \"identifier\": {\n      \"value\": \"1205361007\"\n    }\n  },\n  \"address\": {\n    \"value\": \"Algarrobos\"\n  },\n  \"phoneAddress\": {\n    \"description\": \"0702854996\"\n  },\n  \"status\": {\n    \"code\": \"Enable\"\n  }\n}"
+							"raw": "{\n  \"name\": \"Denise Martinez\",\n  \"gender\": {\n    \"code\": \"F\"\n  },\n  \"age\": 25,\n  \"identification\": {\n    \"type\": {\n      \"code\": \"IDCD\",\n      \"name\": \"Cedula\"\n    },\n    \"identifier\": {\n      \"value\": \"1205361111\"\n    }\n  },\n  \"address\": {\n    \"value\": \"Algarrobos\"\n  },\n  \"phoneAddress\": {\n    \"description\": \"0702854996\"\n  },\n  \"status\": {\n    \"code\": \"Enable\"\n  }\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/support/customers/2",
+							"raw": "http://localhost:8090/support/customers/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8090",
 							"path": [
 								"support",
 								"customers",
@@ -123,15 +132,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"password\": \"231dQEedstr\",\n  \"status\": {\n    \"code\": \"Disable\"\n  }\n}"
+							"raw": "{\n  \"password\": \"RS%$&2Sd\",\n  \"status\": {\n    \"code\": \"Enable\"\n  }\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/support/customers/2",
+							"raw": "http://localhost:8090/support/customers/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8090",
 							"path": [
 								"support",
 								"customers",
@@ -152,16 +161,50 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/support/customers/1",
+							"raw": "http://localhost:8090/support/customers/33",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8090",
 							"path": [
 								"support",
 								"customers",
-								"1"
+								"33"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GenerateToken",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"subject\": \"2\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8090/support/customers/generatedToken",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8090",
+							"path": [
+								"support",
+								"customers",
+								"generatedToken"
 							]
 						}
 					},
@@ -170,7 +213,7 @@
 			]
 		},
 		{
-			"name": "sp-account-movement",
+			"name": "sp-account",
 			"item": [
 				{
 					"name": "PostAccount",
@@ -188,7 +231,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"type\": {\n    \"code\": \"A\",\n    \"description\": \"Ahorro\"\n  },\n  \"initialBalance\": 20,\n  \"status\": {\n    \"code\": \"Enable\"\n  },\n  \"customerId\": 2\n}"
+							"raw": "{\n  \"type\": {\n    \"code\": \"A\",\n    \"description\": \"AHORRO\"\n  },\n  \"status\": {\n    \"code\": \"Enable\"\n  },\n  \"customerId\": 6\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8080/support/accounts",
@@ -216,7 +259,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/support/accounts?accountNumber=2802236401",
+							"raw": "http://localhost:8080/support/accounts",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -229,7 +272,13 @@
 							"query": [
 								{
 									"key": "accountNumber",
-									"value": "2802236401"
+									"value": "6250878649",
+									"disabled": true
+								},
+								{
+									"key": "customerId",
+									"value": "6",
+									"disabled": true
 								}
 							]
 						}
@@ -247,7 +296,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/support/accounts/1",
+							"raw": "http://localhost:8080/support/accounts/22",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -256,7 +305,7 @@
 							"path": [
 								"support",
 								"accounts",
-								"1"
+								"22"
 							]
 						}
 					},
@@ -278,10 +327,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"accountNumber\": \"2802236401\",\n  \"type\": {\n    \"code\": \"C\",\n    \"description\": \"Corriente\"\n  },\n  \"initialBalance\": 200,\n  \"status\": {\n    \"code\": \"Enabled\"\n  },\n  \"customerId\": 3\n}"
+							"raw": "{\n  \"accountNumber\": \"2802236411\",\n  \"type\": {\n    \"code\": \"C\",\n    \"description\": \"Corriente\"\n  },\n  \"initialBalance\": 0,\n  \"status\": {\n    \"code\": \"Enabled\"\n  },\n  \"customerId\": 2\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/support/accounts/8",
+							"raw": "http://localhost:8080/support/accounts/9",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -290,7 +339,7 @@
 							"path": [
 								"support",
 								"accounts",
-								"8"
+								"9"
 							]
 						}
 					},
@@ -312,10 +361,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"status\": {\n    \"code\": \"Disable\"\n  }\n}"
+							"raw": "{\n  \"status\": {\n    \"code\": \"Enable\"\n  }\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/support/accounts/8",
+							"raw": "http://localhost:8080/support/accounts/9",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -324,7 +373,7 @@
 							"path": [
 								"support",
 								"accounts",
-								"8"
+								"9"
 							]
 						}
 					},
@@ -341,7 +390,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/support/accounts/1",
+							"raw": "http://localhost:8080/support/accounts/9",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -350,12 +399,17 @@
 							"path": [
 								"support",
 								"accounts",
-								"1"
+								"9"
 							]
 						}
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "sp-transaction",
+			"item": [
 				{
 					"name": "PostTransaction",
 					"request": {
@@ -372,24 +426,23 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"type\": {\n    \"code\": \"D\",\n    \"description\": \"DEPOSITO\"\n  },\n  \"value\": -50\n}"
+							"raw": "{\n  \"type\": {\n    \"code\": \"R\",\n    \"description\": \"RETIRO\"\n  },\n  \"value\": 3\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/support/accounts/transactions?accountNumber=2802236402",
+							"raw": "http://localhost:9091/support/transactions?accountNumber=8581304920",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "9091",
 							"path": [
 								"support",
-								"accounts",
 								"transactions"
 							],
 							"query": [
 								{
 									"key": "accountNumber",
-									"value": "2802236402"
+									"value": "8581304920"
 								}
 							]
 						}
@@ -407,21 +460,21 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/support/accounts/transactions?accountId=8",
+							"raw": "http://localhost:9091/support/transactions",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "9091",
 							"path": [
 								"support",
-								"accounts",
 								"transactions"
 							],
 							"query": [
 								{
 									"key": "accountId",
-									"value": "8"
+									"value": "17",
+									"disabled": true
 								}
 							]
 						}
@@ -444,20 +497,19 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"date\": \"2025-02-22\",\n  \"type\": {\n    \"code\": \"D\",\n    \"description\": \"DEPOSITO\"\n  },\n  \"value\": 25,\n  \"balance\": 201,\n  \"accountId\": 9\n}"
+							"raw": "{\n  \"date\": \"2025-02-22\",\n  \"type\": {\n    \"code\": \"D\",\n    \"description\": \"DEPOSITO\"\n  },\n  \"value\": 25,\n  \"balance\": 100,\n  \"accountId\": 19\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/support/accounts/transactions/1",
+							"raw": "http://localhost:9091/support/transactions/10",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "9091",
 							"path": [
 								"support",
-								"accounts",
 								"transactions",
-								"1"
+								"10"
 							]
 						}
 					},
@@ -482,17 +534,16 @@
 							"raw": "{\n  \"type\": {\n    \"code\": \"R\",\n    \"description\": \"RETIRO\"\n  },\n  \"value\": 30\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/support/accounts/transactions/1",
+							"raw": "http://localhost:9091/support/transactions/10",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "9091",
 							"path": [
 								"support",
-								"accounts",
 								"transactions",
-								"1"
+								"10"
 							]
 						}
 					},
@@ -509,17 +560,16 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/support/accounts/transactions/2",
+							"raw": "http://localhost:9091/support/transactions/9",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "9091",
 							"path": [
 								"support",
-								"accounts",
 								"transactions",
-								"2"
+								"9"
 							]
 						}
 					},
@@ -536,30 +586,29 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/support/accounts/transactions/report?accountNumber=2802236402&startDate=2025-02-20&endDate=2025-02-24",
+							"raw": "http://localhost:9091/support/transactions/report?accountNumber=8581304920&startDate=2025-02-25&endDate=2025-03-05",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "9091",
 							"path": [
 								"support",
-								"accounts",
 								"transactions",
 								"report"
 							],
 							"query": [
 								{
 									"key": "accountNumber",
-									"value": "2802236402"
+									"value": "8581304920"
 								},
 								{
 									"key": "startDate",
-									"value": "2025-02-20"
+									"value": "2025-02-25"
 								},
 								{
 									"key": "endDate",
-									"value": "2025-02-24"
+									"value": "2025-03-05"
 								}
 							]
 						}

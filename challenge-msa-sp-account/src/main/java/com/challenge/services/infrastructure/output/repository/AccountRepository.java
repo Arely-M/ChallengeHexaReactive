@@ -21,4 +21,6 @@ public interface AccountRepository{
     Flux<Account> findAllAccounts();
 
     Mono<Account> findByAccountNumber(String accountNumber);
+
+    Mono<Account> findAccountByCustomerId(String customerId);
 }

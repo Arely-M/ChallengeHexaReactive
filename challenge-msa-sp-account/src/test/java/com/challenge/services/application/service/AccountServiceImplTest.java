@@ -43,13 +43,13 @@ class AccountServiceImplTest {
     @Test
     void shouldReturnAccountWhenValidInput() {
         Account request = new Account();
-        when(repositoryPort.getAccountByFilter(anyString())).thenReturn(Flux.just(request));
+        when(repositoryPort.getAccountByFilter(anyString(), anyString())).thenReturn(Flux.just(request));
 
-        Mono<Void> result = accountService.getAccountByFilter(anyString()).then();
+        Mono<Void> result = accountService.getAccountByFilter(anyString(), anyString()).then();
 
         StepVerifier.create(result)
                 .verifyComplete();
 
-        verify(repositoryPort, times(1)).getAccountByFilter(anyString());
+        verify(repositoryPort, times(1)).getAccountByFilter(anyString(), anyString());
     }
 }

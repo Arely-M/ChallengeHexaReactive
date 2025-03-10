@@ -4,6 +4,7 @@ import com.challenge.services.infrastructure.exception.CustomerException;
 import com.challenge.services.infrastructure.output.repository.CustomerReactiveRepository;
 import com.challenge.services.infrastructure.output.repository.CustomerRepository;
 import com.challenge.services.infrastructure.output.repository.entity.Customer;
+import com.challenge.services.input.clientSpAccount.AccountApi;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 
 import static com.challenge.services.infrastructure.input.adapter.rest.error.resolver.DefaultError.error_002_Customer_Not_Fount;
+import static com.challenge.services.infrastructure.input.adapter.rest.error.resolver.DefaultError.error_005_Have_Account;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ import static com.challenge.services.infrastructure.input.adapter.rest.error.res
 @Generated
 public class CustomerRepositoryImpl implements CustomerRepository {
     private final CustomerReactiveRepository customerReactiveRepository;
+    private final AccountApi accountApi;
 
     @Override
     public Mono<Customer> saveCustomer(Customer customer) {
@@ -46,9 +49,17 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     public Mono<Void> deleteCustomer(String customerId) {
         log.info("|---> deleteCustomer in repository");
-        return customerReactiveRepository.deleteById(Integer.valueOf(customerId))
-                .doOnError(error -> log.error("<---| deleteCustomer - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
-
+        return accountApi.getAccountByFilter(null, customerId)
+                .flatMap(account -> accountApi.deleteAccount(account.getAccountId())
+                        .then(customerReactiveRepository.deleteById(Integer.valueOf(customerId))))
+                .switchIfEmpty(customerReactiveRepository.deleteById(Integer.valueOf(customerId))
+                        .then(Mono.fromRunnable(() -> log.info("<---| deleteCustomer finished successfully"))))
+                .onErrorMap(error -> {
+                    log.error("Account found with customer ID: {}", customerId);
+                    return new CustomerException(error_005_Have_Account);
+                })
+                .doOnError(error -> log.error("<---| deleteCustomer - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()))
+                .then();
     }
 
     @Override

@@ -12,4 +12,7 @@ public interface AccountReactiveRepository extends ReactiveCrudRepository<Accoun
 
     @Query("SELECT c.* FROM account c WHERE c.accountnumber = :accountnumber")
     Mono<Account> findByAccountNumber(@Param("accountnumber") String accountNumber);
+
+    @Query("SELECT c.* FROM account c WHERE c.customerid = :customerid")
+    Mono<Account> findAccountByCustomerId(@Param("customerid") int customerId);
 }

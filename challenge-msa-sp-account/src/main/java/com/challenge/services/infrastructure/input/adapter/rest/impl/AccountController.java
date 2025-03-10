@@ -29,9 +29,9 @@ public class AccountController implements SupportApi {
     }
 
     @Override
-    public Mono<ResponseEntity<Flux<Account>>> getAccountByFilter(String accountNumber, ServerWebExchange exchange) {
+    public Mono<ResponseEntity<Flux<Account>>> getAccountByFilter(String accountNumber, String customerId, ServerWebExchange exchange) {
         log.info("|-> SP getAccountByFilter started");
-        return accountService.getAccountByFilter(accountNumber)
+        return accountService.getAccountByFilter(accountNumber, customerId)
                 .map(AccountMapper.INSTANCE::mapperToAccountResponse)
                 .collectList()
                 .map(accounts -> ResponseEntity.ok(Flux.fromIterable(accounts)))

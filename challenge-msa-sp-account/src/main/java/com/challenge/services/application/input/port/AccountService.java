@@ -11,13 +11,13 @@ import reactor.core.publisher.Mono;
 public interface AccountService {
     Mono<Void> createAccount(@Valid Account account);
 
-    Flux<Account> getAccountByFilter(String accountNumber);
+    Flux<Account> getAccountByFilter(@Valid String accountNumber, @Valid String customerId);
 
-    Mono<Void> deleteAccount(String accountId);
+    Mono<Void> deleteAccount(@Valid String accountId);
 
-    Mono<Void> putAccount(String accountId, @Valid Account account);
+    Mono<Void> putAccount(@Valid String accountId, @Valid Account account);
 
-    Mono<Void> patchAccount(String accountId, @Valid Account account);
+    Mono<Void> patchAccount(@Valid String accountId, @Valid Account account);
 
-    Mono<Account> getAccountById(String accountId);
+    Mono<Account> getAccountById(@Valid String accountId);
 }

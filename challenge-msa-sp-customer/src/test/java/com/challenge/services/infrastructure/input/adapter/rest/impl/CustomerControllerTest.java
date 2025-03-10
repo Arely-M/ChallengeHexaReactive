@@ -2,7 +2,6 @@ package com.challenge.services.infrastructure.input.adapter.rest.impl;
 
 import com.challenge.services.application.service.CustomerServiceImpl;
 import com.challenge.services.domain.dto.Customer;
-import com.challenge.services.input.server.models.PostCustomerRequest;
 import com.challenge.services.util.MockObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +45,7 @@ class CustomerControllerTest {
 
     @Test
     void getServiceByFilterSuccess() {
-        when(customerService.getCustomerByFilter(anyString())).thenReturn(Flux.just(MockObject.getCustomer()));
+        when(customerService.getCustomerByFilter(anyString(), anyString())).thenReturn(Flux.just(MockObject.getCustomer()));
 
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/support/customers")

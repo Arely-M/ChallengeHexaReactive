@@ -3,12 +3,10 @@ package com.challenge.services.infrastructure.input.adapter.rest.impl;
 import com.challenge.services.application.input.port.CustomerService;
 import com.challenge.services.infrastructure.input.adapter.rest.mapper.CustomerMapper;
 import com.challenge.services.input.server.SupportApi;
-import com.challenge.services.input.server.models.Customer;
-import com.challenge.services.input.server.models.PatchCustomerRequest;
-import com.challenge.services.input.server.models.PostCustomerRequest;
-import com.challenge.services.input.server.models.PutCustomerRequest;
+import com.challenge.services.input.server.models.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,8 +31,9 @@ public class CustomerController implements SupportApi {
 
     @Override
     public Mono<ResponseEntity<Flux<Customer>>> getCustomerByFilter(String customerId, ServerWebExchange exchange) {
+        String authorization = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         log.info("|-> SP getCustomerByFilter started");
-        return customerService.getCustomerByFilter(customerId)
+        return customerService.getCustomerByFilter(authorization, customerId)
                 .map(CustomerMapper.INSTANCE::mapperCustomerDtoToCustomerResponse)
                 .collectList()
                 .map(customers -> ResponseEntity.ok(Flux.fromIterable(customers)))
@@ -52,16 +51,32 @@ public class CustomerController implements SupportApi {
                 .then(Mono.just(ResponseEntity.ok().build()));
     }
 
+
     @Override
     public Mono<ResponseEntity<Void>> postCustomer(Mono<PostCustomerRequest> postCustomerRequestMono, ServerWebExchange exchange) {
         log.info("|-> SP postCustomer started");
         return postCustomerRequestMono
-                .flatMap( postCustomerRequest -> customerService
+                .flatMap(postCustomerRequest -> customerService
                         .createCustomer(CustomerMapper.INSTANCE.mapperPostCustomerRequestToCustomerDto(postCustomerRequest)))
                 .doOnSuccess(response -> log.info("<-| SP postCustomer finished successfully"))
                 .doOnError(error -> log.error("<-| SP postCustomer finished with error {}", error.getMessage()))
                 .then(Mono.just(ResponseEntity.status(HttpStatus.CREATED).build()));
     }
+
+    @Override
+    public Mono<ResponseEntity<PostCustomerGeneratedTokenResponse>> postCustomerGeneratedToken(
+            Mono<PostCustomerGeneratedTokenRequest> postCustomerGeneratedTokenRequestMono,
+            ServerWebExchange exchange) {
+        log.info("|-> SP postCustomerGeneratedToken started");
+        return postCustomerGeneratedTokenRequestMono
+                .flatMap(postCustomerGeneratedTokenRequest -> customerService
+                        .postCustomerGeneratedToken(CustomerMapper.INSTANCE.mapperPostCustomerGeneratedTokenRequestToString(postCustomerGeneratedTokenRequest)))
+                .map(jwt -> CustomerMapper.INSTANCE.mapperJwtToPostCustomerGeneratedTokenResponse(jwt.getJwt()))
+                .map(ResponseEntity::ok)
+                .doOnSuccess(response -> log.info("<-| SP postCustomerGeneratedToken finished successfully"))
+                .doOnError(error -> log.error("<-| SP postCustomerGeneratedToken finished with error {}", error.getMessage()));
+    }
+
 
     @Override
     public Mono<ResponseEntity<Void>> putCustomer(String customerId, Mono<PutCustomerRequest> putCustomerRequestMono, ServerWebExchange exchange) {

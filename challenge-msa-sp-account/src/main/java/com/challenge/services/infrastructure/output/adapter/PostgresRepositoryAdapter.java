@@ -2,6 +2,7 @@ package com.challenge.services.infrastructure.output.adapter;
 
 import com.challenge.services.application.output.port.RepositoryPort;
 import com.challenge.services.domain.dto.Account;
+import com.challenge.services.infrastructure.exception.AccountException;
 import com.challenge.services.infrastructure.output.adapter.mapper.PostgreSQLRepositoryAdapterMapper;
 import com.challenge.services.infrastructure.output.repository.AccountRepository;
 import com.challenge.services.input.server.models.GetAccountByIdResponse;
@@ -13,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static com.challenge.services.infrastructure.input.adapter.rest.error.resolver.DefaultError.error_002_Account_Not_Fount;
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
@@ -53,11 +57,15 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
     }
 
     @Override
-    public Flux<Account> getAccountByFilter(String accountNumber) {
-        if (accountNumber == null) {
+    public Flux<Account> getAccountByFilter(String accountNumber, String customerId) {
+        if (isNull(accountNumber) && isNull(customerId)) {
             return getAccounts();
         }
+        if (isNull(accountNumber)) {
+            return getByCustomerId(customerId);
+        }
         return getByAccountNumber(accountNumber);
+
     }
 
     private Flux<Account> getAccounts() {
@@ -69,8 +77,20 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
                 .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperAccountEntityToAccountDto);
     }
 
+    private Flux<Account> getByCustomerId(String customerId) {
+        return accountRepository.findAccountByCustomerId(customerId)
+                .map(accountEntity -> {
+                    log.info("account by customerId: {}", new Gson().toJson(accountEntity));
+                    return accountEntity;
+                })
+                .map(PostgreSQLRepositoryAdapterMapper.INSTANCE::mapperAccountEntityToAccountDto)
+                .flux();
+    }
+
+
     private Flux<Account> getByAccountNumber(String accountNumber) {
         return accountRepository.findByAccountNumber(accountNumber)
+                .switchIfEmpty(Mono.error(new AccountException(error_002_Account_Not_Fount)))
                 .map(accountEntity -> {
                     log.info("account by number: {}", new Gson().toJson(accountEntity));
                     return accountEntity;
@@ -97,8 +117,8 @@ public class PostgresRepositoryAdapter implements RepositoryPort {
     @Override
     public Mono<Void> putAccount(String accountId, Account account) {
         return accountRepository.updateAccount(
-                        accountId,
-                        PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPutAccountToAccountEntity(account));
+                accountId,
+                PostgreSQLRepositoryAdapterMapper.INSTANCE.mapperPutAccountToAccountEntity(account));
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.challenge.services.domain.dto;
 
 @lombok.Setter
 @lombok.Getter
-public class Gender {
+public class Identifier {
 
-    private String code;
+    private String value;
 }

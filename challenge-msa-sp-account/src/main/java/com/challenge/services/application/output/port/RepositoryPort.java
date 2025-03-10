@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 public interface RepositoryPort {
     Mono<Void> createAccount(Account account);
 
-    Flux<Account> getAccountByFilter(String accountNumber);
+    Flux<Account> getAccountByFilter(String accountNumber, String customerId);
 
     Mono<Void> deleteAccount(String accountId);
 

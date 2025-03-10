@@ -26,9 +26,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Flux<Account> getAccountByFilter(String accountNumber) {
+    public Flux<Account> getAccountByFilter(String accountNumber, String customerId) {
         log.info("|--> getAccountByFilter start");
-        return repositoryPort.getAccountByFilter(accountNumber)
+        return repositoryPort.getAccountByFilter(accountNumber, customerId)
                 .doOnNext(response -> log.info("<--| getAccountByFilter finished successfully"))
                 .doOnError(error -> log.error("<--| getAccountByFilter finished with error {}", error.getMessage()));
     }

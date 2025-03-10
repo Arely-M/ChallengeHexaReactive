@@ -177,6 +177,36 @@ paths:
             <br><br>
             <sup><i>(EN)</i></sup> Deletion successful.            
 
+  /support/customers/generatedToken:
+    post:
+      tags:
+        -  Customer
+      summary: "⁽ᴱˢ⁾ Genera Token. \n⁽ᴱᴺ⁾ Generate Token.\n"
+      operationId: PostCustomerGeneratedToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCustomerGeneratedTokenRequest'
+            examples:
+              PostCustomerGeneratedTokenRequestExample:
+                $ref: '#/components/examples/PostCustomerGeneratedTokenRequestExample'
+      responses:
+        "200":
+          description: |-
+            <b>`Created`</b><br><br>
+            <sup><i>(ES)</i></sup> Ejecución exitosa.
+            <br><br>
+            <sup><i>(EN)</i></sup> Successful execution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCustomerGeneratedTokenResponse'
+              examples:
+                PostCustomerGeneratedTokenResponseExample:
+                  $ref: '#/components/examples/PostCustomerGeneratedTokenResponseExample'
+
+
 components:
   schemas:
     GetCustomerByFilterResponse:
@@ -260,9 +290,9 @@ components:
             <sup><i>(ES)</i></sup> Código del género.
             <br><br>
             <sup><i>(EN)</i></sup> Gender code.
-          enum:
-            - M
-            - F
+          minLength: 1
+          maxLength: 1
+          pattern: "^[FM]$"
     Identification:
       type: object
       description: |-
@@ -287,10 +317,9 @@ components:
             <sup><i>(ES)</i></sup> Especifica el código de identificación que se puede utilizar para identificar a una parte.
             <br><br>
             <sup><i>(EN)</i></sup> Specifies the code of identification which can be used to identify a party.
-          enum:
-            - CCPT #0002 PASAPORTE
-            - TXID #0003 REGISTRO UNICO CONTRIBUYENTE
-            - IDCD #0001 CEDULA
+          minLength: 4
+          maxLength: 4
+          pattern: "^[a-zA-Z]+$"
         name:
           type: string
           description: |-
@@ -405,6 +434,24 @@ components:
         status:
           $ref: '#/components/schemas/Status'
 
+    PostCustomerGeneratedTokenRequest:
+      type: object
+      properties:
+        subject:
+          type: string
+          minLength: 0
+          maxLength: 40
+          pattern:  "^[0-9]+$"
+
+    PostCustomerGeneratedTokenResponse:
+      type: object
+      properties:
+        jwt:
+          type: string
+          minLength: 1
+          maxLength: 100
+          pattern:  "^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$"
+
   examples:
     GetCustomerByFilterResponseExample:
       value:
@@ -469,4 +516,9 @@ components:
         password: 231dQEedstring
         status:
           code: Enabled
-
+    PostCustomerGeneratedTokenRequestExample:
+      value:
+        subject: "1"
+    PostCustomerGeneratedTokenResponseExample:
+      value:
+        jwt: "CE5hwvt0X5SVsxRKkdFikyGFayRHHqBSwsymnQkV_CRPUMwDUsHujORLzTcQ_8FTCJdPnHFf1dtQvc7rBy.PcIKyN5zp52_CqEPS"

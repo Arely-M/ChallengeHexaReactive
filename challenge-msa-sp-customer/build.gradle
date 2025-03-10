@@ -52,6 +52,11 @@ dependencies {
 	implementation 'io.swagger.core.v3:swagger-annotations:2.2.10'
 	implementation 'com.google.code.gson:gson:2.11.0'
 
+	// Dependencias para jjwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // También puedes usar jjwt-gson o jjwt-orgjson si prefieres
+
 	// Unit Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
@@ -83,7 +88,23 @@ task generateServer(type: org.openapitools.generator.gradle.plugin.tasks.Generat
 	]
 }
 
-compileJava.dependsOn generateServer
+task generateClientSpAccount(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName = 'java'
+	inputSpec = "$rootDir/src/main/resources/client-sp-account.yaml"
+	outputDir = "$buildDir/generated"
+	apiPackage = "${packageName}.input.clientSpAccount"
+	modelPackage = "${packageName}.input.clientSpAccount.models"
+	library = "webclient"
+	configOptions = [
+			useSpringBoot3          : "true",
+			useJakartaEe            : "true",
+			openApiNullable         : "false",
+			sourceFolder            : "src/main/java",
+			configPackage           : "${packageName}.input.config",
+	]
+}
+
+compileJava.dependsOn generateServer, generateClientSpAccount
 
 sourceSets.main.java.srcDirs = ["$buildDir/generated/src/main/java", "src/main/java"]
 

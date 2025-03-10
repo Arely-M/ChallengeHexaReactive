@@ -8,6 +8,12 @@ spring:
     name: challenge-msa-sp-customer
   r2dbc:
     url: r2dbc:pool:postgresql://postgres:root@localhost:5432/challengeBank
+  http-client:
+    api:
+      client-sp-account:
+        base-url: http://localhost:8080
   output:
     ansi:
       enabled: ALWAYS
+
+key: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'

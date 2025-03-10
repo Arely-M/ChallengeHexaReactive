@@ -26,4 +26,10 @@ public class GlobalControllerExceptionHandler {
     public String internalServerError(Exception ex){
         return "Internal Error";
     }
+
+    @ExceptionHandler(value = {RuntimeException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String internalServerError1(RuntimeException ex){
+        return "The data entered does not comply with the contract standards";
+    }
 }

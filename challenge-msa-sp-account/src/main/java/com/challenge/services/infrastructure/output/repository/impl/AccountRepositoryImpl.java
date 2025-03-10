@@ -50,6 +50,13 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
+    public Mono<Account> findAccountByCustomerId(String customerId) {
+        log.info("|---> findAccountByCustomerId account in repository");
+        return accountReactiveRepository.findAccountByCustomerId(Integer.parseInt(customerId))
+                .doOnError(error -> log.error("<---| findAccountByCustomerId - ERROR: An error occurred during the execution of the procedure. {}", error.getMessage()));
+    }
+
+    @Override
     public Mono<Account> findByAccountId(String accountId) {
         log.info("|---> findByAccountId account in repository");
         return accountReactiveRepository.findById(Integer.valueOf(accountId))
@@ -63,7 +70,7 @@ public class AccountRepositoryImpl implements AccountRepository {
         return transactionApi.getTransactionByFilter(accountId)
                 .flatMap(transaction -> {
                     log.error("Transaction found with account ID: {}", accountId);
-                    return Mono.error(new AccountException(error_007_Have_Transactions));
+                    throw new AccountException(error_007_Have_Transactions);
                 })
                 .switchIfEmpty(accountReactiveRepository.deleteById(Integer.valueOf(accountId))
                         .then(Mono.fromRunnable(() -> log.info("<---| deleteAccount finished successfully"))))

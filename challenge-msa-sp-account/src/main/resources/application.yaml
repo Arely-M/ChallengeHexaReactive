@@ -8,9 +8,6 @@ spring:
     name: challenge-msa-sp-account
   r2dbc:
     url: r2dbc:pool:postgresql://postgres:root@localhost:5432/challengeBank
-#    url: r2dbc:postgresql://localhost:5432/challengeBank
-#    username: postgresql
-#    password: root
   redis:
     database: 0
     host: redis-19515.c13.us-east-1-3.ec2.redns.redis-cloud.com

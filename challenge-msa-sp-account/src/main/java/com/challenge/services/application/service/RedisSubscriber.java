@@ -27,7 +27,7 @@ public class RedisSubscriber implements MessageListener {
         Customer customer = new Gson().fromJson(messageString, Customer.class);
 
         Account account = new Account();
-        account.setCustomerId(BigDecimal.valueOf(customer.getId()));
+        account.setCustomerId(new BigDecimal(customer.getCustomerId()));
 
         Type type = new Type();
         type.setCode("A");

@@ -1,9 +1,8 @@
 package com.challenge.services.infrastructure.input.adapter.rest.mapper;
 
 import com.challenge.services.domain.dto.Customer;
-import com.challenge.services.input.server.models.PatchCustomerRequest;
-import com.challenge.services.input.server.models.PostCustomerRequest;
-import com.challenge.services.input.server.models.PutCustomerRequest;
+import com.challenge.services.domain.dto.Subject;
+import com.challenge.services.input.server.models.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -14,10 +13,8 @@ public interface CustomerMapper {
 
     CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
 
-    @Mapping(target = "gender", ignore = true)
     Customer mapperPostCustomerRequestToCustomerDto(PostCustomerRequest postCustomerRequest);
 
-    @Mapping(target = "gender", ignore = true)
     com.challenge.services.input.server.models.Customer mapperCustomerDtoToCustomerResponse(Customer customer);
 
     @Mapping(target = "phoneAddress", ignore = true)
@@ -31,7 +28,13 @@ public interface CustomerMapper {
 
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "customerId", ignore = true)
-    @Mapping(target = "gender", ignore = true)
     Customer mapperPatchCustomerRequestToCustomerDto(PutCustomerRequest putCustomerRequest);
+
+    @Mapping(target = "value", source = "subject")
+    Subject mapperPostCustomerGeneratedTokenRequestToString(PostCustomerGeneratedTokenRequest postCustomerGeneratedTokenRequest);
+
+    @Mapping(target = "jwt", source = "jwt")
+    PostCustomerGeneratedTokenResponse mapperJwtToPostCustomerGeneratedTokenResponse(String jwt);
+
 
 }
